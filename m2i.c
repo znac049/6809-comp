@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <malloc.h>
 #include <string.h>
+#include <stdint.h>
 
 #define CR  '\r'
 #define LF  '\n'
@@ -12,6 +13,8 @@
 #define UNIMPLEMENTED -3
 #define BADXSUM -4
 
+#define MAXSTR 512
+
 struct RECORD {
   int addr;
   int count;
@@ -20,6 +23,7 @@ struct RECORD {
 
 struct RECORD record;
 
+static char *errors[] = {"OK", "Too short", "Bad format", "Unimplemented", "Bad checksum"};
 char toLower(char c)
 {
   if ((c >= 'A') && (c <= 'Z')) {
@@ -96,6 +100,37 @@ int convert(char *line, int nChars)
   return res;
 }
 
+int checksum(char *line)
+{
+  int len = strlen(line);
+  int calcSum = 0;
+  int count;
+  int i;
+  char *payload = &line[2];
+
+  if ((len & ~1) != len) {
+    printf("\n%s\nLength %d is not supposed to be odd\n", line, len);
+    return -1;
+  }
+
+  count = convert(payload, 2) - 1;
+  if (count < 0) {
+    printf("\n%s\nCount should not be negative\n", line);
+    return -1;
+  }
+
+  for (i=0; i<=count; i++) {
+    int bv = convert(payload, 2);
+
+    payload += 2;
+    calcSum += bv;
+  }
+
+  calcSum = (~calcSum & 0xff);
+
+  return calcSum & 0xff;
+}
+
 int processSrec(char *line)
 {
   int len = strlen(line);
@@ -119,12 +154,26 @@ int processSrec(char *line)
   }
 
   recType = line[1];
+  count = convert(&line[2], 2);
+  addr = convert(&line[4], 4);
+
+  xSum = convert(&line[2+count+count], 2);
+  calcSum = checksum(line);
+
+  record.count = -1;
+
+  if (calcSum != xSum) {
+    printf("\n%s\nBAD CHECKSUM: %02x != %02x\n", line, calcSum, xSum);
+    
+    return BADXSUM;
+  }
 
   switch (recType) {
-  case '1':
-    count = convert(&line[2], 2);
-    addr = convert(&line[4], 4);
+  case '0':
+    // vendor specific header - text
+    break;
 
+  case '1':
     if ((count < 3) || (addr == -1)) {
       return BADFORMAT;
     }
@@ -142,39 +191,21 @@ int processSrec(char *line)
       record.bytes[i] = val;
     }
  
-    payload = &line[2];
-
-    xSum = convert(&payload[count+count], 2);
-    count--;
-    for (i=0; i<=count; i++) {
-      int bv = convert(payload, 2);
-
-      payload += 2;
-      calcSum += bv;
-    }
-
-    calcSum = (~calcSum & 0xff);
-    if (calcSum != xSum) {
-      printf("\n%08x != %02x\n", calcSum, xSum);
-
-      return BADXSUM;
-    }
-    
-    //printf("\n%d bytes starting at address $%04x - xSum=%02x\n\n\n", record.count, record.addr, ~calcSum & 0xff);
-    
     break;
 
-  case '9':
-    count = convert(&line[2], 2);
-    addr = convert(&line[4], 4);
-
-    record.count = 0;
-    record.addr = addr;
-
-    if ((count < 3) || (addr == -1)) {
+  case '5':
+    if ((count != 3) || (addr == -1)) {
       return BADFORMAT;
     }
 
+    break;
+
+  case '9':
+    if ((count != 3) || (addr == -1)) {
+      return BADFORMAT;
+    }
+
+    record.count = 0;
     break;
     
   default:
@@ -188,8 +219,10 @@ int writeIntel() {
   int i;
   int calcSum = record.count;
 
-  if (record.count == 0) {
-    printf(":00000001FF\n");
+  if (record.count <= 0) {
+    if (record.count == 0) {
+      printf(":00000001FF\n");
+    }
   }
   else {
     calcSum += ((record.addr >> 8) & 0xff);
@@ -204,7 +237,6 @@ int writeIntel() {
 
     printf("%02X\n", (-(calcSum & 0xff)) & 0xff);
   }
-
 
   return OK;
 }
@@ -231,7 +263,7 @@ void copy() {
   }
 }
   
-int main(uint argc, char **argv)
+int main(int argc, char **argv)
 {
   copy();
 }
