@@ -22,6 +22,7 @@ struct RECORD {
 };
 
 struct RECORD record;
+int relAddr = -1;
 
 static char *errors[] = {"OK", "Too short", "Bad format", "Unimplemented", "Bad checksum"};
 char toLower(char c)
@@ -178,8 +179,12 @@ int processSrec(char *line)
       return BADFORMAT;
     }
 
+    if (relAddr == -1) {
+      relAddr = addr;
+    }
+
     record.count = count-3;
-    record.addr  = addr - 0xe000;
+    record.addr  = addr - relAddr;
 
     payload = &line[8];
     for (i=0; i<record.count; i++) {
