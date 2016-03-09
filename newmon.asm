@@ -870,77 +870,72 @@ SWI1:       lda     #'Z
             rti
 
             
-WelcomeMsg	fcb		CR,LF,LF
-			fcc		"6809 monitor."
-            fcb     CR,LF,LF
-            fcc     "Copyright (c) Bob Green, 2016"
+WelcomeMsg	fcb	CR,LF,LF
+		fcc	"6809 monitor."
+        	fcb     CR,LF,LF
+        	fcc     "Copyright (c) Bob Green, 2016"
+		fcb	CR,LF,EOS
+
+mbrSigMsg	fcc	"MBR signature: "
+			fcb		EOS
+
+memMsg		fcc	"RAM: "
+			fcb		EOS
+
+noRamMsg	fcc	"Couldn't find any ram!"
+			fcb		EOS
+
+cmdPrompt	fcc	"> "
+			fcb		EOS
+
+badCmdMsg	fcc	"Unrecognised command."
 			fcb		CR,LF,EOS
 
-mbrSigMsg	fcc		"MBR signature: "
-			fcb		EOS
-
-memMsg		fcc		"RAM: "
-			fcb		EOS
-
-noRamMsg	fcc		"Couldn't find any ram!"
-			fcb		EOS
-
-cmdPrompt	fcc		"> "
-			fcb		EOS
-
-badCmdMsg	fcc		"Unrecognised command."
-			fcb		CR,LF,EOS
-
-noFATMsg	fcc		"No FAT16 partition found to boot from."
+noFATMsg	fcc	"No FAT16 partition found to boot from."
 			fcb		CR,LF,EOS
             
-dPartHdr	fcc		"Partition number "
+dPartHdr	fcc	"Partition number "
 			fcb		EOS
             
-foundFATMsg fcc     "Found FAT16B partition (type 6) in partition slot #"
-            fcb     EOS
+foundFATMsg 	fcc     "Found FAT16B partition (type 6) in partition slot #"
+        	fcb     EOS
             
-bootSecMsg  fcc     "FAT16 Boot sector:"
-            fcb     CR,LF,EOS
+bootSecMsg  	fcc     "FAT16 Boot sector:"
+        	fcb     CR,LF,EOS
             
-bootSecProb fcc     "Bad FAT16 boot block"
-            fcb     CR,LF,EOS
+bootSecProb 	fcc     "Bad FAT16 boot block"
+        	fcb     CR,LF,EOS
             
-volMsg      fcc     "Volume label: "
-            fcb     EOS
+volMsg      	fcc     "Volume label: "
+        	fcb     EOS
             
-ldMBRMsg    fcc     "Loading MBR..."
-            fcb     EOS
+ldMBRMsg    	fcc     "Loading MBR..."
+        	fcb     EOS
             
-partStartMsg
-            fcc     "Partition start LBA: "
-            fcb     EOS
+partStartMsg	fcc     "Partition start LBA: "
+        	fcb     EOS
             
-FATStartMsg fcc     "FAT #1 start LBA: "
-            fcb     EOS
+FATStartMsg	fcc     "FAT #1 start LBA: "
+        	fcb     EOS
             
-rootStartMsg
-            fcc     "Root directory start LBA: "
-            fcb     EOS
+rootStartMsg	fcc     "Root directory start LBA: "
+        	fcb     EOS
             
-noFileMsg   fcc     "No boot file found"
-            fcb     CR,LF,EOS
+noFileMsg   	fcc     "No boot file found"
+        	fcb     CR,LF,EOS
 
-            
-zzz         fdb     $dead
-            
             
 
 ;--------------------------------------------------------------------------------
 ; Pad out rest of ROM
 Empty		equ		ROMBeg+ROMSize-16
-			fill	$FF, Empty-*
+			fill	$FF,Empty-*
 
-			fdb		Nothing				; Reserved
-			fdb		Nothing				; SWI3
-			fdb		Nothing				; SWI2
-			fdb		Nothing				; FIRQ
-			fdb		Nothing				; IRQ
-			fdb		swiVec				; SWI
-			fdb		Nothing				; NMI
-			fdb		RESET				; Hard reset vector
+			fdb	Nothing				; Reserved
+			fdb	Nothing				; SWI3
+			fdb	Nothing				; SWI2
+			fdb	Nothing				; FIRQ
+			fdb	Nothing				; IRQ
+			fdb	swiVec				; SWI
+			fdb	Nothing				; NMI
+			fdb	RESET				; Hard reset vector
