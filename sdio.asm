@@ -7,22 +7,36 @@ sdLBA1		equ	3
 sdLBA2		equ	4
 sdLBA3		equ     5
 
-
+;--------------------------------------------------------------------------------
+; pte - partition table entry
+;
+pte		struct
+stat		rmb	1
+startchs	rmb	3
+type		rmb	1
+endchs		rmb	3
+startlba	rmb	4
+endlba		rmb	4
+		endstruct
 
 ;--------------------------------------------------------------------------------
-; dirent - FAT16 directory entry
+; mbr - master boot record
 ;
-dirent		struct
-name		rmb	8
-ext		rmb	3
-attrib		rmb	1
-reserved	rmb	1
-creation	rmb	5
-accessed	rmb	2
-reserved2	rmb	2
-lastwrite	rmb	4
-cluster		rmb	2
-size		rmb	4
+mbr		struct
+code1		rmb	218
+zero		rmb	2
+phys		rmb	1
+secs		rmb	1
+mins		rmb	1
+hours		rmb	1
+code2		rmb	216
+dsig		rmb	4
+prot		rmb	2
+pt		pte
+pt2		pte
+pt3		pte
+pt4		pte
+sig		rmb	2			; Expect $55AA
 		endstruct
 
 ;--------------------------------------------------------------------------------

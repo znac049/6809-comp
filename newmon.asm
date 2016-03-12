@@ -30,6 +30,7 @@ MbrSig		equ	510
 
 		include	"sdio.asm"
 		include "serio.asm"
+		include	"fat16.asm"
 
 ;
 ; Hard reset
