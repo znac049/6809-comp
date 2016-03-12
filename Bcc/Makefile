@@ -3,15 +3,15 @@
 # $Id$
 #
 
-PREFIX=/usr
+PREFIX=/home/bob
 
 CFLAGS	=-O
 LDFLAGS	=-s
 BINDIR	=$(PREFIX)/bin
-LIBDIR	=$(PREFIX)/lib/bcc
+LIBDIR	=$(PREFIX)/bin
 BCCDEFS	=-DLOCALPREFIX=$(PREFIX) -DBINDIR=$(BINDIR) -DDEFARCH=0
 
-BCFLAGS=$(ANSI) $(CFLAGS) $(LDFLAGS)
+BCFLAGS=$(ANSI) $(CFLAGS) $(LDFLAGS) -DMC6809
 
 OBJS = bcc-cc1.o codefrag.o debug.o declare.o express.o exptree.o floatop.o \
 	function.o gencode.o genloads.o glogcode.o hardop.o input.o label.o \

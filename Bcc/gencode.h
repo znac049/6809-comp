@@ -2,9 +2,7 @@
 
 /* Copyright (C) 1992 Bruce Evans */
 
-#ifdef MC6809
 # define CANABXCUTOFF 7		/* favour ABX over MUL before this */
-#endif
 #define EXPRLEVEL 126		/* level for symbols in exptree, > real levs */
 #define OFFKLUDGELEVEL 127	/* level for expr sym with offset from name */
 #define OPERANDSEPARATOR ','	/* char separating operands */
@@ -35,10 +33,6 @@ EXTERN bool_t long_big_endian;	/* nonzero if high long word is first */
 				/* depends on zero init */
 #endif
 EXTERN offset_T lowsp;		/* low water sp (collects locals in switch) */
-#ifdef POSINDEPENDENT
-EXTERN bool_t posindependent;	/* nonzero to generate pos-independent code */
-				/* depends on zero init */
-#endif
 EXTERN bool_t printf_fp;	/* nonzero if *printf called with FP arg  */
 EXTERN bool_t regarg;		/* nonzero to show unloaded register arg */
 				/* depends on zero init */
@@ -78,18 +72,10 @@ extern store_pt regregs;	/* mask (in) for regs which can be reg vars */
 extern char *acclostr;
 extern char *accumstr;
 extern char *badregstr;
-#ifdef I8088
-extern char *dreg1str;
-extern char *dreg1bstr;
-extern char *dreg2str;
-#endif
 extern char *ireg0str;
 extern char *ireg1str;
 extern char *ireg2str;
 extern char *localregstr;
-#ifdef I8088
-extern char *stackregstr;
-#endif
 
 /* register sizes */
 

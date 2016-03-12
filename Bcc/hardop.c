@@ -69,9 +69,7 @@ struct symstruct *source;
     store_t regmark;
     struct symstruct *target;
     struct symstruct targ;
-#ifdef MC6809
     store_pt targreg;
-#endif
 
     *(target = &targ) = *source;
     bump = 1;
@@ -151,7 +149,6 @@ struct symstruct *source;
 	return;
     }
     loadany(source);
-#ifdef MC6809
     if (postflag && targ.flags != REGVAR &&
 	!(source->storage & ALLDATREGS) &&
 	((reguse |= source->storage) & allindregs) != allindregs)
@@ -172,14 +169,6 @@ struct symstruct *source;
     storereg(targreg, target);
     target->storage = targreg;
     target->offset.offi = 0;
-#else
-    addconst(bump, source->storage);
-    if (postflag)
-	source->offset.offi = -bump;
-    storereg(source->storage, target);
-    target->storage = source->storage;
-    target->offset.offi = 0;
-#endif
 }
 
 PUBLIC void neg(target)
@@ -368,9 +357,7 @@ struct symstruct *target;
     }
     else
     {
-#ifdef MC6809
 	source->type = ctype;	/* fool outadr to avoid ,S++ */
-#endif
 #ifdef OP1
 	if (!(tscalar & CHAR) || op != ANDOP)
 	{

@@ -42,14 +42,7 @@ bool_pt absflag;
 	if (framep == 0)
 	    bugerror("no frame pointer");
 #else
-# ifdef I8088
-	outleasp();
-	outoffset(newsp - sp);
-	outindstackreg();
-	outnl();
-# else
 	modstk(newsp);		/* this should preserve CC */
-# endif
 #endif /* FRAMEPOINTER */
     }
 }
@@ -94,13 +87,9 @@ offset_T newsp;
 	else
 	    regtransfer(FRAMEREG, STACKREG);
 #else
-# ifdef I8088
-	addconst(newsp - sp, STACKREG);
-# else
 	outleasp();
 	outoffset(newsp - sp);
 	outncspregname();
-# endif
 #endif
 	sp = newsp;
     }
@@ -171,15 +160,8 @@ store_pt reglist;
     reguse |= (store_t) reglist;
 }
 
-#ifdef I8088
-PRIVATE smalin_t regoffset[] = {0, 0, 0, 1, 2, 3, 0, 0, 0, 4, 5};
- /* CONSTANT, BREG, ax = DREG, bx = INDREG0, si = INDREG1, di = INDREG2 */
- /* LOCAL, GLOBAL, STACKREG, cx = DATREG1, dx = DATREG2 */
-#endif
-#ifdef MC6809
 PRIVATE smalin_t regoffset[] = {0, 0, 0, 1, 3, 2};
  /* CONSTANT, BREG, DREG, XREG = INDREG0, UREG = INDREG1, YREG = INDREG2 */
-#endif
 
 PUBLIC void savereturn(savelist, saveoffset)
 store_pt savelist;
@@ -191,35 +173,18 @@ offset_T saveoffset;
 
     if (savelist == 0)
 	return;
-#ifdef MC6809 /* must check this */
     if (savelist == XREG || savelist == INDREG1)
 	saveoffset -= accregsize;	/* patch for DREG/YREG not saved */
-#endif
     for (reg = 1, regoffptr = regoffset; reg != 0; ++regoffptr, reg <<= 1)
 	if (reg & savelist)
 	{
 	    outstore();
 	    spoffset = saveoffset + *regoffptr * maxregsize;
-#ifdef I8088
-# ifdef FRAMEPOINTER
-	    if (switchnow != NULL)
-		outswoffset(spoffset);
-	    else
-		outoffset(spoffset - framep);
-	    outindframereg();
-# else
-	    outoffset(spoffset - sp);
-	    outindstackreg();
-# endif
-	    outncregname(reg);
-#endif
-#ifdef MC6809
 	    if (reg == YREG)
 		bumplc();
 	    outregname(reg);
 	    outtab();
 	    outoffset(spoffset - sp);
 	    outncspregname();
-#endif
 	}
 }

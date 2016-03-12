@@ -23,23 +23,6 @@ FORWARD fastin_pt pushpull P((store_pt reglist, bool_pt pushflag));
 PUBLIC void addoffset(source)
 struct symstruct *source;
 {
-#ifdef I8088
-    if (source->level == OFFKLUDGELEVEL)
-    {
-	outadd();
-	outregname(source->storage);
-	outcomma();
-        outimmed();
-	outnamoffset(source);
-	outnl();
-	if (source->storage & (AXREG | ALREG))
-	    unbumplc();
-	if (source->level == OFFKLUDGELEVEL)
-	    source->level = EXPRLEVEL;
-	source->offset.offi = 0;
-    }
-    else
-#endif
     if (source->offset.offi != 0)
     {
 	addconst(source->offset.offi, source->storage);
@@ -83,11 +66,7 @@ struct symstruct *source;
 #ifdef STACKREG
     regtransfer(STACKREG, DREG);
 #else
-#ifdef MC6809 /* XXX ? */
     regtransfer(LOCAL, DREG);
-#else
-#include "need STACKREG and stackregstr"
-#endif
 #endif
     push(length);
     push(source);
@@ -124,15 +103,6 @@ PUBLIC store_pt getindexreg()
     if (!(reguse & INDREG2))
 	return INDREG2;
 #if NOTFINISHED
-#ifdef I80386
-    if (i386_32)
-    {
-	if (!(reguse & DATREG1))
-	    return DATREG1;
-	if (!(reguse & DATREG2))
-	    return DATREG2;
-    }
-#endif
 #endif
     bugerror("out of index regs");
     return 0;
@@ -155,9 +125,7 @@ PUBLIC void indexadr(source, target)
 struct symstruct *source;
 struct symstruct *target;
 {
-#ifdef MC6809
     bool_t canABX;
-#endif
     uoffset_T size;
     store_pt sourcereg;
     struct typestruct *targtype;
@@ -185,18 +153,13 @@ struct symstruct *target;
 	targreg = sourcereg;
     else
 	targreg = getindexreg();
-#ifdef I8088
     if ((store_t) sourcereg == GLOBAL && target->indcount == 0 &&
 	!(source->type->scalar & CHAR) && source->storage != DREG)
 	load(source, targreg);
     else
-#endif
 	load(source, DREG);
 
-#ifdef I8088
     softop(MULOP, constsym((value_t) size), source);
-#endif
-#ifdef MC6809
 
 /*-----------------------------------------------------------------------------
 	do some calculations in advance to decide if index can be done with ABX
@@ -211,7 +174,6 @@ struct symstruct *target;
 	softop(MULOP, constsym((value_t) size), source);
     }
 
-#endif
 
 /*-----------------------------------------------------------------------------
 	deal with constant target - constant becomes offset, result in DREG
@@ -229,23 +191,6 @@ struct symstruct *target;
 	and the offset can be left after adding DREG
 -----------------------------------------------------------------------------*/
 
-#ifdef I8088
-    if (target->indcount != 0)
-    {
-	targtype = target->type;
-	target->type = itype;
-	add(source, target);
-	target->type = targtype;
-	return;
-    }
-    if ((store_t) sourcereg == GLOBAL)
-    {
-	target->storage = source->storage;
-	target->level = OFFKLUDGELEVEL;
-	return;
-    }
-#endif
-#ifdef MC6809
     if (canABX || (store_t) sourcereg == GLOBAL)
     {
 	load(target, targreg);
@@ -263,22 +208,12 @@ struct symstruct *target;
 	while (size--)
 	    outABX();
     else
-#endif
     {
-#ifdef I8088
-	if ((store_t) targreg != (store_t) sourcereg)
-	    regtransfer(sourcereg, targreg);
-	outadd();
-	outregname(targreg);
-	outncregname(DREG);
-#endif
-#ifdef MC6809
 	outlea();
 	outregname(targreg);
 	outtab();
 	outregname(DREG);
 	outncregname(sourcereg);
-#endif
     }
     if ((store_t) sourcereg == LOCAL)
 #ifdef FRAMEPOINTER
@@ -348,14 +283,6 @@ store_pt targreg;
 	    return;
 	if (source->storage == CONSTANT)
 	{
-#ifdef I80386
-	    if (i386_32)
-	    {
-	       loadconst(((offset_T *) source->offset.offd)[0], DREG);
-	       loadconst(((offset_T *) source->offset.offd)[1], targreg&~DREG);
-	    }
-	    else /* XXX - more for non-386 */
-#endif
 	    {
 	       int regs, i, off=1;
 	       loadconst(((unsigned short *) source->offset.offd)[0], DREG);
@@ -386,21 +313,12 @@ store_pt targreg;
 	float val;
 
 	val = *source->offset.offd;
-#ifdef I80386
-	if (i386_32)
-	   loadconst(((offset_T *) &val)[0], targreg);	/* XXX 386 */
-	else
-#endif
 	{
 	   loadconst(((unsigned short *) &val)[0], DREG);
 	   loadconst(((unsigned short *) &val)[1], targreg&~DREG);
 	}
     }
-#ifdef I80386
-    else if (!i386_32 && source->type->scalar & FLOAT)
-#else
     else if (source->type->scalar & FLOAT)
-#endif
     {
 	/* Treat a float just like a long ... */
 	if (source->indcount == 0)
@@ -430,17 +348,10 @@ store_pt targreg;
     {
 	if (source->storage == GLOBAL)
 	{
-#ifdef MC6809
-	    if (posindependent)
-	    {
-		pushreg(INDREG0);
-		loadreg(source, INDREG0);
-		transfer(source, DREG);
-		recovlist(INDREG0);
-	    }
-	    else
-#endif
-		loadreg(source, targreg);
+	  pushreg(INDREG0);
+	  loadreg(source, INDREG0);
+	  transfer(source, DREG);
+	  recovlist(INDREG0);
 	}
 	if (source->storage == LOCAL)
 #ifdef FRAMEPOINTER
@@ -450,10 +361,6 @@ store_pt targreg;
 #endif
 	if (source->type->scalar & CHAR)
 	    targreg = BREG;
-#ifdef I8088
-	if (source->storage == DREG)
-	    addoffset(source);
-#endif
 	if (source->storage != (store_t) targreg)
 	    transfer(source, targreg);
 	addoffset(source);
@@ -559,70 +466,15 @@ store_pt targreg;
     }
     else
     {
-#ifdef I8088
-	if (source->indcount == 0 && source->storage != GLOBAL &&
-	    (source->offset.offi != 0 || source->level == OFFKLUDGELEVEL))
+      if (source->indcount == 0)
+	outlea();
+      else
 	{
-	    if ((store_t) targreg == source->storage)
-	    {
-		addoffset(source);
-		return;
-	    }
-	    source->indcount = 1;	/* fake for outadr() to produce "()" */
-	    outlea();
+	  outload();
+	  if ((store_t) targreg == YREG)
+	    bumplc();
 	}
-	else
-	{
-#ifdef I8088
-	    /* Added acess to CPU registers. Just declare _AX etc. as
-	     * extern int, and you can use them to get/set
-	     * the register values. (vak) */
-	    if (source->storage == GLOBAL && !(source->flags & LABELLED) &&
-		*source->name.namep != 0 && 
-		strncmp(source->name.namep, "__", 2) == 0)
-	    {
-		if (strcmp (source->name.namep, "__AX") == 0)
-		{
-		    /* Load AX register - do nothing. */
-done:		    source->storage = AXREG;	/* in register for further use */
-		    source->flags = 0;
-		    if (source->level == OFFKLUDGELEVEL)
-			source->level = EXPRLEVEL;
-		    source->offset.offi = 0;	/* indcount was adjusted by outadr */
-		    return;
-		}
-		if (strcmp (source->name.namep, "__BX") == 0) { outstr ("mov\tax,bx\n"); goto done; }
-		if (strcmp (source->name.namep, "__CX") == 0) { outstr ("mov\tax,cx\n"); goto done; }
-		if (strcmp (source->name.namep, "__DX") == 0) { outstr ("mov\tax,dx\n"); goto done; }
-		if (strcmp (source->name.namep, "__SP") == 0) { outstr ("mov\tax,sp\n"); goto done; }
-		if (strcmp (source->name.namep, "__BP") == 0) { outstr ("mov\tax,bp\n"); goto done; }
-		if (strcmp (source->name.namep, "__SI") == 0) { outstr ("mov\tax,si\n"); goto done; }
-		if (strcmp (source->name.namep, "__DI") == 0) { outstr ("mov\tax,di\n"); goto done; }
-		if (strcmp (source->name.namep, "__CS") == 0) { outstr ("mov\tax,cs\n"); goto done; }
-		if (strcmp (source->name.namep, "__DS") == 0) { outstr ("mov\tax,ds\n"); goto done; }
-		if (strcmp (source->name.namep, "__ES") == 0) { outstr ("mov\tax,es\n"); goto done; }
-		if (strcmp (source->name.namep, "__SS") == 0) { outstr ("mov\tax,ss\n"); goto done; }
-		if (strcmp (source->name.namep, "__FLAGS") == 0) { outstr ("pushf\npop\tax\n"); goto done; }
-	    }
-#endif
-	    outload();
-	    if (source->storage == GLOBAL && source->indcount != 0 &&
-		(store_t) targreg & (AXREG | ALREG))
-		unbumplc();
-	}
-#endif
-#ifdef MC6809
-	if (source->indcount == 0 &&
-	    (source->storage != GLOBAL || posindependent))
-	    outlea();
-	else
-	{
-	    outload();
-	    if ((store_t) targreg == YREG)
-		bumplc();
-	}
-#endif
-	movereg(source, targreg);
+      movereg(source, targreg);
     }
 }
 
@@ -653,21 +505,9 @@ store_pt targreg;
 {
     if ((store_t) targreg & ALLDATREGS && source->type->scalar & CHAR)
 	targreg = BREG;
-#ifdef I80386
-    if (i386_32 && source->type->scalar & SHORT &&
-	source->indcount <= 1)
-    {
-	outshortregname(targreg);
-	bumplc();
-    }
-    else
-#endif
 	outregname(targreg);
     if (source->storage == CONSTANT)
 	adjlc((offset_T) source->offset.offv, targreg);
-#ifdef I8088
-    outcomma();
-#endif
     outadr(source);
     source->storage = targreg;	/* in register for further use */
     source->flags = 0;
@@ -715,10 +555,6 @@ struct symstruct *adr;
 	outshex(adr->offset.offi);
     }
     bumplc2();
-#ifdef I80386
-    if (i386_32)
-	bumplc2();
-#endif
 }
 
 /* print comma, then register name, then newline */
@@ -736,123 +572,32 @@ struct symstruct *adr;
     bool_t indflag;
 
     indflag = FALSE;
-#ifdef I8088
-    if (adr->indcount >= MAXINDIRECT)
-	indflag = TRUE;
-#endif
-#ifdef MC6809
     outtab();
     if (adr->indcount >= MAXINDIRECT && (adr->indcount & 1) == 0)
     {
 	indflag = TRUE;		/* indirection means double indirect */
 	outindleft();
     }
-#endif
     switch (adr->storage)
     {
     case CONSTANT:
 	outimmadr((offset_T) adr->offset.offv);
 	break;
-#ifdef I8088
-    case DREG:
-	if (indflag || adr->offset.offi != 0 || adr->level == OFFKLUDGELEVEL)
-	    badaddress();
-	else
-	    outregname(DREG);
-	break;
-#endif
-#ifdef I8088
-    case DATREG1:
-    case DATREG2:
-#ifdef I80386
-	if (indflag && !i386_32)
-#else
-	if (indflag)
-#endif
-	{
-	    outnl();
-	    badaddress();
-	    break;
-	}
-#endif
     case INDREG0:
     case INDREG1:
     case INDREG2:
 	if (adr->level == OFFKLUDGELEVEL)
 	{
-#ifdef I8088
-	    if (!indflag)
-#endif
                 outimmed();
 	    outnamoffset(adr);
         }
-#ifndef MC6809
 	else if (adr->offset.offi != 0)
-#endif
 	    outoffset(adr->offset.offi);
-#ifdef I8088
-	if (indflag)
-	    outindleft();
-	outregname(adr->storage);
-# ifdef XENIX_AS
-	if (indflag)
-	    outindright();
-# endif
-#endif
-#ifdef MC6809
 	if (indflag && adr->offset.offi != 0 && is5bitoffset(adr->offset.offi))
 	    bumplc();
 	outcregname(adr->storage);
-#endif
 	break;
     case LOCAL:
-#ifdef I8088
-# ifdef FRAMEPOINTER
-	if (framep == 0)
-	    bugerror("no frame pointer");
-	if (indflag)
-	{
-	    if (adr->offset.offi == framep)
-		bumplc();
-	    else
-	    {
-	        int off;
-		if (switchnow != NULL && adr->flags == TEMP)
-		    outswoffset(off = adr->offset.offi);
-		else
-		    outoffset(off = adr->offset.offi - framep);
-#ifndef NO_DEL_PUSH
-		if (optimise && !callersaves && off < 0) 
-		{
-		    outstr("+");
-		    outstr(funcname);
-		    outstr(".off");
-		}
-#endif
-	    }
-	    outindleft();
-	}
-	else if (adr->offset.offi != framep)
-	    badaddress();
-	outregname(LOCAL);
-# else
-	if (indflag)
-	{
-	    bumplc();
-	    if (adr->offset.offi != sp)
-		outoffset(adr->offset.offi - sp);
-	    outindleft();
-	}
-	else if (adr->offset.offi != sp)
-	    badaddress();
-	outregname(LOCAL);
-# endif /* FRAMEPOINTER */
-# ifdef XENIX_AS
-	if (indflag)
-	    outindright();
-# endif
-#endif /* I8088 */
-#ifdef MC6809
 	if (adr->flags == TEMP && adr->offset.offi == sp &&
 	    adr->indcount == 1)
 	{
@@ -871,47 +616,8 @@ struct symstruct *adr;
 	    is5bitoffset(adr->offset.offi - sp))
 	    bumplc();
 	outcregname(LOCAL);
-#endif /* MC6809 */
 	break;
     case GLOBAL:
-#ifdef I8088
-	bumplc();
-#ifdef I80386
-	if (i386_32)
-	    bumplc2();
-#endif
-	if (!indflag)
-	    outimmed();
-	else
-	{
-# ifndef XENIX_AS
-	    outindleft();
-# endif
-	    bumplc();
-	}
-#endif
-#ifdef MC6809
-	if (!posindependent)
-	{
-	    if (adr->indcount == 0)
-	    {
-		outimmed();
-		bumplc();
-	    }
-	    else if (indflag)
-	    {
-		outextended();
-		bumplc2();
-	    }
-	    else if (adr->flags & DIRECTPAGE)
-		outdirectpage();
-	    else
-	    {
-		outextended();
-		bumplc();
-	    }
-	}
-#endif
 	if (adr->flags & LABELLED)
 	    outlabel(adr->name.label);
 	else if (*adr->name.namep == 0)	/* constant address */
@@ -927,29 +633,16 @@ struct symstruct *adr;
 		outplus();
 	    outshex(adr->offset.offi);
 	}
-#ifdef MC6809
-	if (posindependent)
-	{
-	    outcregname(GLOBAL);
-	    bumplc2();
-	}
-#endif
+
+	outcregname(GLOBAL);
+	bumplc2();
+
 	break;
     default:
 	outnl();
 	badaddress();
 	break;
     }
-#ifdef I8088
-    if (indflag)
-    {
-	--adr->indcount;
-# ifndef XENIX_AS
-	outindright();
-# endif
-    }
-#endif
-#ifdef MC6809
     if (indflag)
     {
 	outindright();
@@ -957,7 +650,6 @@ struct symstruct *adr;
     }
     else if (adr->indcount != 0)
 	--adr->indcount;
-#endif
 }
 
 /* print register name, then newline */
@@ -982,11 +674,9 @@ store_pt reg;
     case DREG:
 	outstr(accumstr);
 	break;
-#ifdef MC6809
     case GLOBAL:
 	outstr("PC");
 	break;
-#endif
     case INDREG0:
 	outstr(ireg0str);
 	regfuse |= INDREG0;
@@ -1040,40 +730,6 @@ store_pt reg;
     }
 }
 
-#if defined(I8088) && defined(I80386)
-/* print register name for short type */
-
-PUBLIC void outshortregname(reg)
-store_pt reg;
-{
-    switch ((store_t) reg)
-    {
-    case DREG:
-	outstr(accumstr + 1);
-	break;
-    case INDREG0:
-	outstr(ireg0str + 1);
-	break;
-    case INDREG1:
-	outstr(ireg1str + 1);
-	break;
-    case INDREG2:
-	outstr(ireg2str + 1);
-	break;
-    case DATREG1:
-	outstr(dreg1str + 1);
-	break;
-    case DATREG2:
-	outstr(dreg2str + 1);
-	break;
-    default:
-	outstr(badregstr);
-	break;
-    }
-}
-
-#endif
-
 /*-----------------------------------------------------------------------------
 	pointat(target leaf)
 	point OPREG at target
@@ -1101,9 +757,6 @@ PUBLIC void push(source)
 struct symstruct *source;
 {
     store_t reg;
-#ifdef I8088
-    uoffset_T size;
-#endif
     scalar_t sscalar;
 
     if (source->type->constructor & STRUCTU)
@@ -1120,52 +773,6 @@ struct symstruct *source;
 	    restoreopreg();
 	}
     }
-#ifdef I8088
-    else if ((source->indcount == 1 &&
-	     (sscalar & (SHORT | INT | LONG | FLOAT) ||
-	      source->type->constructor & POINTER))
-#ifdef I80386
-	      || (source->storage == CONSTANT && i386_32)
-#endif
-	      )
-    {
-	size = source->type->typesize;
-	if (size == 1)
-	    size = 2;
-	if (sscalar & DLONG)
-	{
-	    source->offset.offi += itypesize;
-	    outpshs();
-	    bumplc();
-	    outtab();
-	    outadr(source);
-	    source->indcount = 1;
-	    source->offset.offi -= itypesize;
-	}
-	outpshs();
-	bumplc();
-	outtab();
-#ifdef I80386
-	if (i386_32)
-	{
-	    if (source->storage == CONSTANT)
-	    {
-		unbumplc();
-		adjlc((offset_T) source->offset.offv, INDREG0);
-	    }
-	    if (size == 2)
-	    {
-		outword();
-		bumplc();
-	    }
-	    else
-		outdword();
-	}
-#endif
-	outadr(source);
-	sp -= size;
-    }
-#endif
     else
     {
 	reg = source->storage;
@@ -1197,21 +804,15 @@ bool_pt pushflag;
     void (*ppfunc) P((void));
     char *regptr;
 
-#ifdef MC6809
     int separator;		/* promoted char for output */
 
-#endif
     fastin_t bytespushed;
     store_pt regbit;
 
     if ((bool_t) pushflag)
     {
 	ppfunc = outpshs;
-#ifdef I8088
-	regbit = 1 << 10;
-#else
 	regbit = 1 << 7;
-#endif
 	regptr = regpushlist;
 	lastregbit = 1;
     }
@@ -1220,44 +821,24 @@ bool_pt pushflag;
 	ppfunc = outpuls;
 	regbit = 1;
 	regptr = regpulllist;
-#ifdef I8088
-	lastregbit = 1 << 10;
-#else
 	lastregbit = 1 << 7;
-#endif
     }
-#ifdef MC6809 /* temp use pull strings to keep old order */
     regbit = 1;
     regptr = regpulllist;
     lastregbit = 1 << 7;
-#endif
-#ifdef MC6809
     separator = OPSEPARATOR;
     (*ppfunc) ();
-#endif
     bytespushed = 0;
     while (TRUE)
     {
 	if (regbit & reglist)
 	{
-#ifdef I8088
-	    (*ppfunc)();
-	    if (*regptr != FLAGSREGCHAR)
-		outtab();
-#endif
-#ifdef MC6809
 	    outbyte(separator);
-#endif
 	    do
 		outbyte(*regptr++);
 	    while (*regptr >= MINREGCHAR);
 	    bytespushed += *regptr++ - '0';
-#ifdef I8088
-	    outnl();
-#endif
-#ifdef MC6809
 	    separator = OPERANDSEPARATOR;
-#endif
 	}
 	else
 	    do
@@ -1265,18 +846,9 @@ bool_pt pushflag;
 	    while (*regptr++ >= MINREGCHAR);
 	if (regbit == lastregbit)
 	    break;
-#ifdef MC6809 /* temp use pull strings to keep old order */
 	regbit <<= 1;
-#else /* this should normally be unconditional */
-	if ((bool_t) pushflag)
-	    regbit >>= 1;
-	else
-	    regbit <<= 1;
-#endif
     }
-#ifdef MC6809
     outnl();
-#endif
     return bytespushed;
 }
 
@@ -1308,52 +880,11 @@ struct symstruct *target;
     }
     else
     {
-#ifdef I8088
-	/* Added acess to CPU registers. Just declare _AX etc. as
-	 * extern int, and you can use them to get/set
-	 * the register values. (vak) */
-	if (target->storage == GLOBAL && !(target->flags & LABELLED) &&
-	    *target->name.namep != 0 && 
-	     strncmp(target->name.namep, "__", 2) == 0)
-	{
-	    if (strcmp (target->name.namep, "__AX") == 0) { return; }
-	    if (strcmp (target->name.namep, "__BX") == 0) { outstr ("mov\tbx,"); outregname(sourcereg); outnl(); return; }
-	    if (strcmp (target->name.namep, "__CX") == 0) { outstr ("mov\tcx,"); outregname(sourcereg); outnl(); return; }
-	    if (strcmp (target->name.namep, "__DX") == 0) { outstr ("mov\tdx,"); outregname(sourcereg); outnl(); return; }
-	    if (strcmp (target->name.namep, "__SP") == 0) { outstr ("mov\tsp,"); outregname(sourcereg); outnl(); return; }
-	    if (strcmp (target->name.namep, "__BP") == 0) { outstr ("mov\tbp,"); outregname(sourcereg); outnl(); return; }
-	    if (strcmp (target->name.namep, "__SI") == 0) { outstr ("mov\tsi,"); outregname(sourcereg); outnl(); return; }
-	    if (strcmp (target->name.namep, "__DI") == 0) { outstr ("mov\tdi,"); outregname(sourcereg); outnl(); return; }
-	    if (strcmp (target->name.namep, "__CS") == 0) { outstr ("mov\tcs,"); outregname(sourcereg); outnl(); return; }
-	    if (strcmp (target->name.namep, "__DS") == 0) { outstr ("mov\tds,"); outregname(sourcereg); outnl(); return; }
-	    if (strcmp (target->name.namep, "__ES") == 0) { outstr ("mov\tes,"); outregname(sourcereg); outnl(); return; }
-	    if (strcmp (target->name.namep, "__SS") == 0) { outstr ("mov\tss,"); outregname(sourcereg); outnl(); return; }
-	    if (strcmp (target->name.namep, "__FLAGS") == 0) { outstr ("push\tax"); outregname(sourcereg); outstr ("\npopf\n"); return; }
-	}
-#endif
 	outstore();
-#ifdef I8088
-	if (target->storage == GLOBAL && (store_t) sourcereg & (AXREG | ALREG))
-	    unbumplc();
-	outnnadr(target);
-	outcomma();
-#ifdef I80386
-	if (i386_32 && target->type->scalar & SHORT)
-	{
-	    outshortregname(sourcereg);
-	    bumplc();
-	    outnl();
-	}
-	else
-#endif
-	    outnregname(sourcereg);
-#endif
-#ifdef MC6809
 	if ((store_t) sourcereg == YREG)
 	    bumplc();
 	outregname(sourcereg);
 	outadr(target);
-#endif
     }
 }
 

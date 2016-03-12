@@ -109,11 +109,9 @@ shiftdone:
 	load(target, getindexreg());
     if (reglist)
     {
-#ifdef I8088
 	if (op == EQOP)
 	    changesp(spmark, FALSE);
 	else
-#endif
 	    modstk(spmark);
 	poplist(reglist);
     }
@@ -150,9 +148,7 @@ struct symstruct *target;
 
 PUBLIC void outlongendian()
 {
-#ifdef MC6809
     outbyte('_');
-#endif
 #if DYNAMIC_LONG_ORDER
     if (long_big_endian)
 #endif

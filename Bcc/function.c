@@ -13,13 +13,6 @@
 #include "type.h"
 #include "scan.h"
 
-#ifdef I8088
-# define ADJUSTLONGRETURN
-# define CANHANDLENOFRAME
-# undef CANHANDLENOFRAME
-# define STUPIDFRAME
-#endif
-
 FORWARD void out_callstring P((void));
 
 /* call a named (assembly interface) procedure, don't print newline after */
@@ -48,10 +41,8 @@ struct symstruct *source;
 	else
 #endif
 	    outcalladr();
-#ifdef MC6809
 	if (source->indcount == 1)
 	    ++source->indcount;	/* fake for outadr */
-#endif
 	outadr(source);
     }
     source->type = source->type->nexttype;
@@ -86,23 +77,12 @@ struct symstruct *source;
 #endif
 	source->storage = BREG;
     }
-#ifdef I80386
-    else if (i386_32)
-    {
-        if (source->type->scalar & DOUBLE)
-	    source->storage = doublreturnregs & ~DREG;
-        else
-	    source->storage = RETURNREG;
-    }
+#ifdef BOBGREEN
     else
 #endif
     {
         if (source->type->scalar & DOUBLE)
 	    source->storage = doublreturnregs;
-#ifdef I8088
-        else if (source->type->scalar & FLOAT)
-	    source->storage = RETURNREG|DATREG2;
-#endif
         else
 	    source->storage = RETURNREG;
     }
@@ -200,23 +180,9 @@ PUBLIC void loadretexpression()
     else
 #endif
     {
-#ifdef I80386
-        if (i386_32)
-        {
-            if (returntype->scalar & DOUBLE)
-	        loadexpression(doublreturnregs & ~DREG, returntype);
-            else
-	        loadexpression(RETURNREG, returntype);
-        }
-        else
-#endif
 	{
             if (returntype->scalar & DOUBLE)
 	        loadexpression(doublreturnregs, returntype);
-#ifdef I8088
-            else if (returntype->scalar & FLOAT)
-	        loadexpression(/* REURNREG|*/ DATREG2, returntype);
-#endif
             else
 	        loadexpression(RETURNREG, returntype);
         }
@@ -260,10 +226,6 @@ struct symstruct *target;
 PRIVATE void out_callstring()
 {
     outop3str(callstring);
-#ifdef I80386
-    if (i386_32)
-	bumplc2();
-#endif
 }
 
 #ifdef FRAMEPOINTER
@@ -358,18 +320,11 @@ PUBLIC void reslocals()
 	    pushlist(doubleargregs);
 	    break;
 	case 4:
-# ifdef I80386
-	    if (!i386_32)
-# endif
 	    {
 		pushlist(LONGARGREGS);
 		break;
 	    }
 	case 2:
-# ifdef I8088
-	    pushlist(ARGREG);
-# endif
-# ifdef MC6809
 	    switch (sp - softsp)
 	    {
 	    case 3:
@@ -388,7 +343,6 @@ PUBLIC void reslocals()
 		pushlist(ARGREG);
 		break;
 	    }
-# endif /* MC6809 */
 	}
 	arg1size = 0;		/* show 1st arg allocated */
     }
@@ -431,7 +385,6 @@ PUBLIC void ret()
     }
     outreturn();
 #else /* no FRAMEPOINTER */
-# ifdef MC6809
     store_pt reglist;
 
     switch (sp)
@@ -454,13 +407,5 @@ PUBLIC void ret()
 	return;
     }
     poplist(reglist);
-#else
-    if (sp != 0)
-    {
-	modstk(-(offset_T) func1saveregsize);
-	poplist(callee1mask);
-    }
-    outreturn();
-# endif /* no MC6809 */
 #endif /* no FRAMEPOINTER */
 }

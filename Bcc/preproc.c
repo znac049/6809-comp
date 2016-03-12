@@ -20,8 +20,6 @@ PUBLIC bool_pt blanksident()
     return isident();
 }
 
-#ifdef BUILTIN_CPP
-
 #define MAX_IF		32
 #define MAX__LINE__	10	/* enough for 32-bit source unsigneds */
 #define MAX_MACRO	32
@@ -89,7 +87,7 @@ PRIVATE void asmcontrol()
 	outnstr("#asm");
     else
     {
-	outnstr("!BCC_ASM");
+	outnstr(";BCC_ASM");
 	dumplocs();
     }
 #ifndef ASM_BARE
@@ -145,7 +143,7 @@ PRIVATE void asmcontrol()
     if (orig_cppmode)
 	outnstr("#endasm");
     else
-	outnstr("!BCC_ENDASM");
+	outnstr(";BCC_ENDASM");
 }
 
 PUBLIC void checknotinif()
@@ -1079,4 +1077,3 @@ char *str;
     defineorundefinestring(str, FALSE);
 }
 
-#endif

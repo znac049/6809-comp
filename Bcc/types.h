@@ -12,16 +12,8 @@ typedef unsigned char char_t;	/* target char */
 typedef long value_t;		/* target ints, longs and offsets */
 typedef unsigned long uvalue_t;	/* target unsigned ints, longs and offsets */
 
-#ifdef I8088
-typedef long offset_T;		/* target machine offset */
-typedef unsigned long uoffset_T;	/* target unsigned machine offset */
-#define outuvalue outhex
-#define outvalue outshex
-#endif
-#ifdef MC6809
 typedef int offset_T;
 typedef unsigned uoffset_T;
-#endif
 
 
 /*
@@ -29,18 +21,12 @@ typedef unsigned uoffset_T;
   it must have a few more bits than the target has registers
 */
 
-#ifdef I8088
-typedef unsigned store_pt;	/* promoted store_t */
-typedef unsigned store_t;	/* storage class flags */
-#endif
-#ifdef MC6809
 #ifdef __STDC__
 typedef int store_pt;
 # else
 typedef unsigned store_pt;
 # endif
 typedef unsigned char store_t;
-#endif
 
 
 /*

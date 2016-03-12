@@ -35,11 +35,9 @@ PRIVATE char unsigncc[] =	/* unsigned condition codes LT --> LO etc */
 
 FORWARD void cmplocal P((struct symstruct *source, struct symstruct *target,
 			  ccode_t *pcondtrue));
-#ifdef MC6809
 FORWARD void cmporsub P((struct symstruct *target));
 FORWARD bool_pt cmpsmallconst P((value_t intconst, struct symstruct *target,
 				  ccode_t *pcondtrue));
-#endif
 FORWARD void comparecond P((struct nodestruct *exp, label_no truelab,
 			     label_no falselab, bool_pt nojump));
 FORWARD void jumpcond P((struct nodestruct *exp, label_no truelab,
@@ -62,33 +60,6 @@ ccode_t *pcondtrue;
     label_no falselab;
 
     cmplocal(source, target, pcondtrue);
-#if 0
-#ifdef I80386
-    if (i386_32)
-    {
-	if (*pcondtrue == LO)
-	{
-	    getlabel();
-	    getlabel();
-	    outnop2str("sbb\teax,eax");
-	    outnop1str("inc eax");
-	    target->storage = BREG;
-	    target->type = ctype;
-	    return;
-	}
-	if (*pcondtrue == HS)
-	{
-	    getlabel();
-	    getlabel();
-	    outnop2str("sbb\teax,eax");
-	    outnop2str("neg eax");
-	    target->storage = BREG;
-	    target->type = ctype;
-	    return;
-	}
-    }
-#endif
-#endif
     sbranch(oppcc[(int)*pcondtrue], falselab = getlabel());
     loadlogical(target, falselab);
 }
@@ -152,42 +123,23 @@ ccode_t *pcondtrue;
 	    test(target, pcondtrue);
 	    return;
 	}
-#ifdef MC6809
 	if (cmpsmallconst(source->offset.offv, target, pcondtrue))
 	    return;
-#endif
     }
     if (!(sscalar & CHAR) && tscalar & CHAR)
     {
 	loadpres(target, source);
 	extend(target);
     }
-#ifndef MC6809
-# define posindependent 0
-#endif
-    if (source->indcount == 0 && source->storage != CONSTANT &&
-	(posindependent || source->storage != GLOBAL))
+    if (source->indcount == 0 && source->storage != CONSTANT)
     {
 	loadpres(source, target);
-#ifdef MC6809
 	push(source);
-#endif
     }
     loadpres(target, source);
-#ifdef MC6809
     cmporsub(target);
-#else
-    outcmp();
-#endif
-#ifdef I8088
-    if (source->storage == GLOBAL && source->indcount == 0 &&
-	!(target->storage & (AXREG | ALREG)))
-	bumplc();
-#endif
     movereg(source, target->storage);
 }
-
-#ifdef MC6809
 
 PRIVATE void cmporsub(target)
 struct symstruct *target;
@@ -225,8 +177,6 @@ ccode_t *pcondtrue;
     }
     return FALSE;
 }
-
-#endif
 
 PRIVATE void comparecond(exp, truelab, falselab, nojump)
 struct nodestruct *exp;
@@ -447,10 +397,6 @@ PRIVATE void test(target, pcondtrue)
 struct symstruct *target;
 ccode_t *pcondtrue;
 {
-#ifdef I8088
-    store_t targreg;
-#endif
-
     *pcondtrue = testcc[(int)*pcondtrue];
     if (target->type->scalar & DLONG)
     {
@@ -462,39 +408,6 @@ ccode_t *pcondtrue;
 	float1op(EQOP, target);
 	return;
     }
-#ifdef I8088
-    if (target->indcount != 0 ||
-	(target->storage == LOCAL && target->offset.offi != sp))
-	load(target, DREG);
-    if (target->storage == GLOBAL)
-	load(target, getindexreg());
-    if (target->type->scalar & CHAR)
-	load(target, DREG);
-    targreg = target->storage;
-    if (target->offset.offi != 0 && cc_signed(*pcondtrue))
-	load(target, targreg);
-
-#ifdef I80386
-    /* Extension was not done in exptree for the == 0 case, to allow
-     * optimization here - which we don't do for shorts.  (foo--) is
-     * newfoo == -1 here and used to be missed.
-     */
-    if (i386_32 && target->type->scalar & SHORT)
-	extend(target);
-#endif
-
-    if (target->offset.offi == 0)
-    {
-	outtest();
-	outregname(targreg);
-	outcomma();
-	outnregname(targreg);
-	return;
-    }
-    outcmp();
-    outimadj(-target->offset.offi, targreg);
-#endif
-#ifdef MC6809
     if (target->indcount != 0 ||
 	target->storage == LOCAL && target->offset.offi != sp)
     {
@@ -525,7 +438,6 @@ ccode_t *pcondtrue;
 	cmporsub(target);
 	outimadj(-target->offset.offi, target->storage);
     }
-#endif
 }
 
 /* test expression and jump depending on NE/EQ */

@@ -51,7 +51,6 @@ struct symstruct *target;
 	resultscalar |= sscalar;
 	uflag |= sscalar & UNSIGNED;
     }
-#ifdef MC6809
     if ((op_t) op == MULOP && sscalar & CHAR && tscalar & CHAR &&
 	(source->storage != CONSTANT || (uvalue_t) source->offset.offv > 2))
     {
@@ -65,15 +64,9 @@ struct symstruct *target;
 	target->type = iscalartotype(resultscalar);
 	return;
     }
-#endif
     if (source->storage == CONSTANT)
     {
 	extend(target);
-#ifdef I8088
-	if (op == MULOP || op == SLOP)
-	    loadany(target);
-	else
-#endif
 	    load(target, DREG);
 	target->type = iscalartotype(resultscalar);
 	sourceval = source->offset.offv;
@@ -127,14 +120,9 @@ struct symstruct *target;
 	source->storage == OPREG && source->indcount != 0) ||
 	((sscalar & CHAR || source->storage & WORKDATREGS) &&
 	target->storage == OPREG && target->indcount != 0) ||
-#ifdef MC6809 /* for -Wall */
 	(
-#endif
 	(source->storage == OPREG &&
-	target->storage == GLOBAL && target->indcount == 0)
-#ifdef MC6809
-	&& posindependent)
-#endif
+	 target->storage == GLOBAL && target->indcount == 0))
 	)
     {
 	if ((regmark | OPREG) == allindregs)
@@ -161,9 +149,6 @@ struct symstruct *target;
 	extend(source);
 	if (target->storage != OPREG &&
 	    (target->storage != GLOBAL || target->indcount != 0
-#ifdef MC6809
-	     || !posindependent
-#endif
 	    ))
 	    workreg = OPREG;
     }
@@ -177,62 +162,25 @@ struct symstruct *target;
 	    workreg = OPREG;
 	}
     }
-    if (target->storage == GLOBAL && target->indcount == 0
-#ifdef MC6809
-	&& posindependent
-#endif
-	)
+    if (target->storage == GLOBAL && target->indcount == 0)
 	load(target, workreg);
 
 /* source and target now in position to be loaded without any more registers */
 
     extend(target);
     load(target, DREG);
-#if defined(I8088)
-    if ((op_t) op != DIVOP && (op_t) op != MODOP )
-    {
-       load(source, DATREG1);	/* CX */
-       switch ((op_t) op)
-       {
-       case MULOP:
-	   outop2str("imul\t");
-	   outnregname(DATREG1);
-	   break;
-       case SLOP:
-	   outop2str("shl\t");
-	   outregname(DREG);
-	   outnstr(",cl");
-	   break;
-       case SROP:
-	   if (uflag) outop2str("shr\t");
-	   else       outop2str("sar\t");
-	   outregname(DREG);
-	   outnstr(",cl");
-	   break;
-       }
-    }
-    else
-#endif
     {
        load(source, OPREG);
        switch ((op_t) op)
        {
        case DIVOP:
-#ifdef I8088
-	   call("idiv_");
-#else
 	   call("idiv");
-#endif
 	   break;
        case MODOP:
 	   call("imod");
 	   break;
        case MULOP:
-#ifdef I8088
-	   call("imul_");
-#else
 	   call("imul");
-#endif
 	   break;
        case SLOP:
 	   call("isl");

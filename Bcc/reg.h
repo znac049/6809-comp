@@ -44,44 +44,18 @@
 #define LOCAL     0x040
 #define GLOBAL    0x080		/* offsets from storage name or 0 */
 #define CCREG     CONSTANT	/* arg to PSHS/PULS functions only */
-#ifdef I8088
-# ifdef FRAMEPOINTER
-#  define FRAMEREG LOCAL
-# endif
-# define STACKREG 0x100
-# define DATREG1  0x200
-# define DATREG2  0x400
-# define DATREG1B 0x800
-#endif
-#ifdef MC6809
 # define DPREG    LOCAL		/* arg to PSHS/PULS functions only */
 # define PCREG    GLOBAL	/* arg to PSHS/PULS functions only */
-#endif
 
 /* data for pushing and pulling registers */
 
 #define MINREGCHAR 'A'
-#ifdef I8088
-# define FLAGSREGCHAR 'f'
-# define pushchar() pushlist(AXREG)
-#endif
-#ifdef MC6809
 # define pushchar() pushlist(BREG)
-#endif
 
 /* special registers */
 
-#ifdef I8088
-# define ALREG    BREG
-# define AXREG    DREG
-# define DXREG    DATREG2
-# define MULREG   DATREG1B
-# define SHIFTREG DATREG1B
-#endif
-#ifdef MC6809
 # define XREG INDREG0		/* XREG is special for ABX in index & switch */
 # define YREG INDREG2		/* XREG and YREG allow LEA (Z test) in cmp() */
-#endif
 
 /* groups of registers */
 
@@ -96,33 +70,23 @@
 #define LONGARGREGS LONGRETURNREGS	/* for long or float arg */
 #define LONGRETURNREGS (INDREG0|LONGREG2)
 #define LONGREG2 DREG
-#ifdef I8088
-# define LONGRETSPECIAL	/* LONGRETURNREGS!=RETURNREG && RETURNREG==LONGREG2 */
-# define RETURNREG DREG
-#endif
-#ifdef MC6809
 # define RETURNREG INDREG0
-#endif
 
 /* registers which can be pulled as a group with the program counter */
 /* to perform an efficient function return */
 
-#ifdef MC6809
 #define JUNK1REGS BREG		/* 1 bytes locals to discard */
 #define JUNK2REGS INDREG2
 #define JUNK3REGS (BREG|INDREG2)
 #define JUNK4REGS (INDREG1|INDREG2)
-#endif
 
 /* registers which can be pushed as a group with the first argument */
 /* to perform an efficient function startup */
 
-#ifdef MC6809
 # define LOC1REGS CCREG		/* 1 bytes local to allocate */
 # define LOC2REGS DREG
 # define LOC3REGS (CCREG|DREG)
 # define LOC4REGS (CCREG|DREG|DPREG)
-# endif
 
 /* registers to be used by software operations */
 
@@ -131,9 +95,4 @@
 
 /* maximum indirection count for 1 instruction */
 
-#ifdef I8088
-# define MAXINDIRECT 1
-#endif
-#ifdef MC6809
 # define MAXINDIRECT 2
-#endif

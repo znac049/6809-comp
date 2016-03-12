@@ -119,7 +119,6 @@ PUBLIC void blanks()
 		continue;
 	    reglineptr = lineptr;
 	}
-#ifdef BUILTIN_CPP
 	if (*reglineptr != '/')
 	    return;
 	if (SYMOFCHAR(*(reglineptr + 1)) == SPECIALCHAR)
@@ -132,9 +131,6 @@ PUBLIC void blanks()
 	    return;
 	gch1();
 	skipcomment();
-#else
-	return;
-#endif
     }
 }
 
@@ -143,9 +139,7 @@ int asm_only;
 {
     int start_of_line = 1;
 #ifndef ASM_BARE
-#ifdef BUILTIN_CPP
     virtual_nl = 1;
-#endif
 #endif
     while (!asm_only || asmmode)
     {
@@ -178,7 +172,6 @@ int asm_only;
 	    outstr(constant.value.s);	/* XXX - embedded null would kill it */
 	    charptr = constant.value.s;
 	    break;
-#ifdef BUILTIN_CPP
 	case CONTROL:
 	    gch1();
 	    if (maclevel != 0)
@@ -203,12 +196,6 @@ int asm_only;
 	    }
 	    outbyte('/');
 	    break;
-#else /* !BUILTIN_CPP */
-	case CONTROL:
-	    gch1();
-	    docontrol();
-	    continue;
-#endif
 	case FLOATCONST:
 	    gch1();
 	    if (SYMOFCHAR(ch) == INTCONST)
@@ -224,7 +211,6 @@ int asm_only;
 	    break;
 	case IDENT:
 	    getident();
-#ifdef BUILTIN_CPP
 	    if ((gsymptr = findlorg(gsname)) != NULL)
 	    {
 		if (gsymptr->flags == DEFINITION)
@@ -233,7 +219,6 @@ int asm_only;
 		    break;
 		}
 	    }
-#endif
 	    outstr(gsname);
 	    break;
 	case INTCONST:
@@ -268,11 +253,7 @@ int asm_only;
 	    /* must be '\\' */
 	default:
 	    /* Allow for multi-instruction lines in asm */
-#ifdef BUILTIN_CPP
 	    if( ch == '^' && !orig_cppmode && asmmode ) ch='\n';
-#else
-	    if( ch == '^' && asmmode ) ch='\n';
-#endif
 
 	    OUTBYTE(ch);
 	    ch = *++lineptr;
@@ -280,9 +261,7 @@ int asm_only;
 	    break;
 	}
 #ifndef ASM_BARE
-#ifdef BUILTIN_CPP
         virtual_nl = 0;
-#endif
 #endif
     }
 }
@@ -457,10 +436,10 @@ PUBLIC void nextsym()
 
     if (expect_statement && asmmode)
     {
-       outnstr("!BCC_ASM");
+       outnstr(";BCC_ASM");
        dumplocs();
        cppscan(1);
-       outnstr("!BCC_ENDASM");
+       outnstr(";BCC_ENDASM");
     }
     else while (TRUE)		/* exit with short, fast returns */
     {
@@ -494,14 +473,12 @@ PUBLIC void nextsym()
 	    constant.type = itype;
 	    return;
 	case CONTROL:
-#ifdef BUILTIN_CPP
 	    if (maclevel != 0)
 	    {
 		error("# in a macro: not preprocessed");	/* XXX? */
 		return;
 	    }
 	    else
-#endif
 	    {
 		int old_asmmode = asmmode;
 		docontrol();
@@ -528,13 +505,11 @@ PUBLIC void nextsym()
 	    getident();
 	    if ((gsymptr = findlorg(gsname)) != NULL)
 	    {
-#ifdef BUILTIN_CPP
 		if (gsymptr->flags == DEFINITION)
 		{
 		    entermac();
 		    break;
 		}
-#endif
 		if (gsymptr->flags == KEYWORD)
 		    sym = gsymptr->offset.offsym;
 	    }
@@ -634,13 +609,11 @@ PUBLIC void nextsym()
 	    }
 	    return;
 	case SLASH:
-#ifdef BUILTIN_CPP
 	    if (ch == '*')
 	    {
 		skipcomment();
 		break;
 	    }
-#endif
 	    if (ch == '=')
 	    {
 		sym = DIVABOP;
@@ -776,9 +749,7 @@ PUBLIC void stringorcharconst()
 	    gch1();
 	    if (ch == EOL)
 	    {
-#ifdef BUILTIN_CPP
 		if (!orig_cppmode)
-#endif
 		    eofin("escape sequence");
 		break;
 	    }
@@ -787,9 +758,7 @@ PUBLIC void stringorcharconst()
 	GCH1();
 	if (ch == EOL)
 	{
-#ifdef BUILTIN_CPP
 	    if (!orig_cppmode && ifcheck() )
-#endif
 		error(terminator == '"' ? "end of line in string constant"
 		      : "end of line in character constant");
 	    break;

@@ -61,18 +61,6 @@ struct symstruct *target;
 	    {
 		/* XXX - 386 only */
 		storereg(DREG, target);
-#ifdef I80386
-		if (i386_32)
-		{
-		    if (tscalar & DOUBLE)
-		    {
-		        target->indcount = 1;  /* XXX outnnadr clobbers this */
-		        target->offset.offi += accregsize;
-		        storereg(doubleregs & ~DREG, target);
-		    }
-		}
-		else
-#endif
 		if (tscalar & DOUBLE)
 		{
 		    int i;
@@ -83,14 +71,6 @@ struct symstruct *target;
 		       storereg(i, target);
 		    }
 		}
-#ifdef I8088
-		else if (tscalar & FLOAT)
-		{
-		    target->indcount = 1;  /* XXX outnnadr clobbers this */
-		    target->offset.offi += accregsize;
-		    storereg(DATREG2, target);
-		}
-#endif
 		target->storage = source->storage;
 		target->offset.offi = 0;
 	    }
@@ -356,15 +336,6 @@ struct symstruct *target;
 	    load(target, DREG);
 	    if (target->type == sctype)
 		sctoi();
-#if defined(I8088) && defined(I80386)
-	    else if (tscalar & SHORT)
-	    {
-		if (tscalar & UNSIGNED)
-		    ustoi();
-		else
-		    stoi();
-	    }
-#endif
 	    else
 		ctoi();
 	    target->storage = DREG;

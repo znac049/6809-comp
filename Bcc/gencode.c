@@ -29,64 +29,19 @@
 			    (t)->type->constructor & FUNCTION))
 #endif
 
-#ifdef I8088
-#if NOTFINISHED
-PUBLIC store_pt allregs = BREG | DREG | DATREG1 | DATREG2
-				      | INDREG0 | INDREG1 | INDREG2;
-#else
-PUBLIC store_pt allregs = BREG | DREG | INDREG0 | INDREG1 | INDREG2;
-#endif
-PUBLIC store_pt allindregs = INDREG0 | INDREG1 | INDREG2;
-PUBLIC uoffset_T alignmask = ~(uoffset_T) 0x0001;
-PUBLIC bool_t arg1inreg = FALSE;
-PUBLIC store_pt calleemask = INDREG1 | INDREG2;
-PUBLIC bool_t callersaves = FALSE;
-PUBLIC char *callstring = "call\t";
-PUBLIC store_pt doubleargregs = DREG | INDREG0 | DATREG1 | DATREG2;
-PUBLIC store_pt doubleregs = DREG | INDREG0 | DATREG1 | DATREG2;
-PUBLIC store_pt doublreturnregs = DREG | INDREG0 | DATREG1 | DATREG2;
-PUBLIC offset_T jcclonger = 3;
-PUBLIC offset_T jmplonger = 1;
-PUBLIC char *jumpstring = "br \t";
-PUBLIC char *regpulllist = "f2ax2ax2bx2si2di2bp2qx2qx2cx2dx2";
-PUBLIC char *regpushlist = "dx2cx2qx2qx2bp2di2si2bx2ax2ax2f2";
-#if NOTFINISHED
-PUBLIC store_pt regregs = INDREG1 | INDREG2 | DATREG1 | DATREG2;
-#else
-PUBLIC store_pt regregs = INDREG1 | INDREG2;
-#endif
-
-PUBLIC char *acclostr = "al";
-PUBLIC char *accumstr = "ax";
-PUBLIC char *badregstr = "qx";
-PUBLIC char *dreg1str = "cx";
-PUBLIC char *dreg1bstr = "cl";
-PUBLIC char *dreg2str = "dx";
-PUBLIC char *ireg0str = "bx";
-PUBLIC char *ireg1str = "si";
-PUBLIC char *ireg2str = "di";
-#ifdef FRAMEPOINTER
-PUBLIC char *localregstr = "bp";
-#else
-PUBLIC char *localregstr = "sp";
-#endif
-PUBLIC char *stackregstr = "sp";
-#endif
-
-#ifdef MC6809
 PUBLIC store_pt allregs = BREG | DREG | INDREG0 | INDREG1 | INDREG2;
 PUBLIC store_pt allindregs = INDREG0 | INDREG1 | INDREG2;
 PUBLIC uoffset_T alignmask = ~(uoffset_T) 0x0000;
 PUBLIC bool_t arg1inreg = TRUE;
 PUBLIC store_pt calleemask = INDREG1 | INDREG2;
 PUBLIC bool_t callersaves = TRUE;
-PUBLIC char *callstring = "JSR\t>";
+PUBLIC char *callstring = "LBSR\t";
 PUBLIC store_pt doubleargregs = DREG | INDREG0 | INDREG1 | INDREG2;
 PUBLIC store_pt doubleregs = DREG | INDREG0 | INDREG1 | INDREG2;
 PUBLIC store_pt doublreturnregs = DREG | INDREG0 | INDREG1 | INDREG2;
 PUBLIC offset_T jcclonger = 2;
 PUBLIC offset_T jmplonger = 1;
-PUBLIC char *jumpstring = "JMP\t>";
+PUBLIC char *jumpstring = "LBRA\t";
 PUBLIC char *regpulllist = "CC1B1D2X2U2Y2DP1PC2";
 PUBLIC char *regpushlist = "PC2DP1Y2U2X2D2B1CC1";
 PUBLIC store_pt regregs = INDREG1 | INDREG2;
@@ -98,7 +53,6 @@ PUBLIC char *ireg0str = "X";
 PUBLIC char *ireg1str = "U";
 PUBLIC char *ireg2str = "Y";
 PUBLIC char *localregstr = "S";
-#endif
 
 PUBLIC uoffset_T accregsize = 2;
 #ifdef FRAMEPOINTER
@@ -108,17 +62,6 @@ PUBLIC uoffset_T maxregsize = 2;
 PUBLIC uoffset_T opregsize = 2;
 PUBLIC uoffset_T pshregsize = 2;
 PUBLIC uoffset_T returnadrsize = 2;
-
-#ifndef MC6809
-PUBLIC uvalue_t intmaskto = 0xFFFFL;
-PUBLIC uvalue_t maxintto = 0x7FFFL;
-PUBLIC uvalue_t maxlongto = 0x7FFFFFFFL;
-PUBLIC uvalue_t maxoffsetto = 0x7FFFL;
-PUBLIC uvalue_t maxshortto = 0x7FFFL;
-PUBLIC uvalue_t maxuintto = 0xFFFFL;
-PUBLIC uvalue_t maxushortto = 0xFFFFL;
-PUBLIC uvalue_t shortmaskto = 0xFFFFL;
-#endif
 
 PRIVATE store_pt callermask;
 PRIVATE offset_T lastargsp;
@@ -377,80 +320,19 @@ register uvalue_t number;
 
 PUBLIC void codeinit()
 {
-#ifdef I80386
-    if (i386_32)
-    {
-	/* Need DATREG2 for doubles although handling of extra data regs is
-	 * not finished.
-	 * XXX - might need more regs for 16-bit mode doubles or floats.
-	 */
-	allregs = BREG | DREG | INDREG0 | INDREG1 | INDREG2
-		  | DATREG1 | DATREG1B | DATREG2;
-#if NOTFINISHED
-	allindregs = INDREG0 | INDREG1 | INDREG2 | DATREG1 | DATREG2;
-#else
-	allindregs = INDREG0 | INDREG1 | INDREG2;
-#endif
-	alignmask = ~(uoffset_T) 0x00000003;
-	calleemask = INDREG0 | INDREG1 | INDREG2;
-	doubleargregs = DREG | DATREG2;
-	doubleregs = DREG | DATREG2;
-	doublreturnregs = DREG | DATREG2;
-	jcclonger = 4;
-	jmplonger = 3;
-	regpulllist = "fd4eax4eax4ebx4esi4edi4ebp4qx4qx4ecx4edx4";
-	regpushlist = "edx4ecx4qx4qx4ebp4edi4esi4ebx4eax4eax4fd4";
-
-	accumstr = "eax";
-	dreg1str = "ecx";
-	dreg2str = "edx";
-	ireg0str = "ebx";
-	ireg1str = "esi";
-	ireg2str = "edi";
+  if (callersaves)
+    calleemask = 0;
+  callermask = ~calleemask;
 #ifdef FRAMEPOINTER
-	localregstr = "ebp";
+  funcsaveregsize = bitcount((uvalue_t) calleemask) * maxregsize
+    + frameregsize;
+  funcdsaveregsize = bitcount((uvalue_t) calleemask & ~doubleregs)
+    * maxregsize + frameregsize;
+  framelist = FRAMEREG | calleemask;
 #else
-	localregstr = "esp";
-#endif
-	stackregstr = "esp";
-
-	opregsize =
-	    returnadrsize =
-	    pshregsize =
-	    maxregsize =
-#ifdef FRAMEPOINTER
-	    frameregsize =
-#endif
-	    accregsize = 4;
-
-	intmaskto = (unsigned long) 0xFFFFFFFFL;
-	maxintto = 0x7FFFFFFFL;
-	maxoffsetto = 0x7FFFFFFFL;
-	maxuintto = (unsigned long) 0xFFFFFFFFL;
-    }
-#endif
-#ifdef POSINDEPENDENT
-    if (posindependent)
-    {
-# ifdef MC6809
-	callstring = "LBSR\t";
-	jumpstring = "LBRA\t";
-# endif
-    }
-#endif
-    if (callersaves)
-	calleemask = 0;
-    callermask = ~calleemask;
-#ifdef FRAMEPOINTER
-    funcsaveregsize = bitcount((uvalue_t) calleemask) * maxregsize
-		      + frameregsize;
-    funcdsaveregsize = bitcount((uvalue_t) calleemask & ~doubleregs)
-		       * maxregsize + frameregsize;
-    framelist = FRAMEREG | calleemask;
-#else
-    funcsaveregsize = bitcount((uvalue_t) calleemask) * maxregsize;
-    funcdsaveregsize = bitcount((uvalue_t) calleemask & ~doubleregs)
-		       * maxregsize;
+  funcsaveregsize = bitcount((uvalue_t) calleemask) * maxregsize;
+  funcdsaveregsize = bitcount((uvalue_t) calleemask & ~doubleregs)
+    * maxregsize;
 #endif
 }
 

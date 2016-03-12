@@ -18,7 +18,7 @@
 # define HEXSTARTCHAR '$'
 #endif
 #define OUTBUFSIZE 2048
-#define opcodeleadin()		/* outtab() for fussy assemblers */
+#define opcodeleadin() outtab()		/* outtab() for fussy assemblers */
 
 PRIVATE unsigned errcount;	/* # errors in compilation */
 				/* depends on zero init */
@@ -31,10 +31,8 @@ PRIVATE fastin_t outstage;	/* depends on zero init */
 
 FORWARD void errorsummary P((void));
 FORWARD void errsum1 P((void));
-#ifdef MC6809
 #ifdef DEBUG
 FORWARD void outvaldigs P((uvalue_t num));
-#endif
 #endif
 
 PUBLIC void bugerror(message)
@@ -157,28 +155,26 @@ char *message;
 
 PUBLIC void finishup()
 {
-#ifdef BUILTIN_CPP
-    if (!orig_cppmode)
-#endif
+  if (!orig_cppmode)
     {
-	if (watchlc)
+      if (watchlc)
 	{
-	    cseg();
-	    outop0str("if *-.program.start-");
-	    outnhex(getlc());
-	    outfail();
-	    outnstr("phase error");
-	    outop0str("endif\n");
+	  cseg();
+	  outop0str("if *-.program.start-");
+	  outnhex(getlc());
+	  outfail();
+	  outnstr("phase error");
+	  outop0str("endif\n");
 	}
 #ifdef HOLDSTRINGS
-	dumpstrings();
+      dumpstrings();
 #endif
-	dumpglbs();
-	errorsummary();
+      dumpglbs();
+      errorsummary();
     }
-    closein();
-    closeout();
-    exit(errcount == 0 ? 0 : 1);
+  closein();
+  closeout();
+  exit(errcount == 0 ? 0 : 1);
 }
 
 /* flush output file */
@@ -210,9 +206,7 @@ PUBLIC void flushout()
     }
     if (nbytes != 0)
     {
-#ifdef BUILTIN_CPP
 	if (!orig_cppmode)
-#endif
 	    clearlabels(outbufptr, outbufptr + nbytes);
 	if (write(output, outbufptr, nbytes) != nbytes)
 	{
@@ -266,7 +260,6 @@ int c;
 	flushout();
 #else /* !C_CODE etc */
 
-#if __AS09__
 # asm
 	TFR	X,D
 	LDX	_outbufptr,PC
@@ -275,61 +268,7 @@ int c;
 	CMPX	_outbuftop,PC
 	LBHS	CALL.FLUSHOUT
 # endasm
-#endif /* __AS09__ */
 
-#if __AS386_16__
-# asm
-# if !__FIRST_ARG_IN_AX__
-	pop	dx
-	pop	ax
-	dec	sp
-	dec	sp
-# else
-#  if ARGREG != DREG
-	xchg	ax,bx
-#  endif
-# endif
-	mov	bx,[_outbufptr]
-	mov	[bx],al
-	inc	bx
-	mov	[_outbufptr],bx
-	cmp	bx,[_outbuftop]
-	jae	Outbyte.Flush
-# if !__FIRST_ARG_IN_AX__
-	jmp	dx
-# else
-	ret
-# endif
-
-Outbyte.Flush:
-# if !__FIRST_ARG_IN_AX__
-	push	dx
-# endif
-	br	_flushout
-# endasm
-#endif /* __AS386_16__ */
-
-#if __AS386_32__
-# asm
-# if !__FIRST_ARG_IN_AX__
-	mov	eax,_outbyte.c[esp]
-# else
-#  if ARGREG != DREG
-	xchg	eax,ebx
-#  endif
-# endif
-	mov	ecx,[_outbufptr]
-	mov	[ecx],al
-	inc	ecx
-	mov	[_outbufptr],ecx
-	cmp	ecx,[_outbuftop]
-	jae	Outbyte.Flush
-	ret
-
-Outbyte.Flush:
-	br	_flushout
-# endasm
-#endif /* __AS386_32__ */
 #endif /* C_CODE etc */
 }
 
@@ -568,7 +507,6 @@ char *s;
     outbufptr = outp;
 #else /* !C_CODE etc */
 
-#if __AS09__
 # asm
 	LEAU	,X
 	LDX	_outbuftop,PC
@@ -596,122 +534,6 @@ OUTSTR.NEXT
 	STX	_outbufptr,PC
 	LEAS	2,S
 # endasm
-#endif /* __AS09__ */
-
-#if __AS386_16__
-# asm
-# if !__CALLER_SAVES__
-	mov	dx,di
-	mov	cx,si
-# endif
-# if !__FIRST_ARG_IN_AX__
-	pop	ax
-	pop	si
-	dec	sp
-	dec	sp
-	push	ax
-# else
-#  if ARGREG == DREG
-	xchg	si,ax
-#  else
-	mov	si,bx
-#  endif
-# endif
-	mov	di,[_outbufptr]
-	mov	bx,[_outbuftop]
-	br	OUTSTR.NEXT
-
-CALL.FLUSHOUT:
-	push	si
-# if !__CALLER_SAVES__
-	push	dx
-	push	cx
-# endif
-	push	ax
-	mov	[_outbufptr],di
-	call	_flushout
-	mov	di,[_outbufptr]
-	mov	bx,[_outbuftop]
-	pop	ax
-# if !__CALLER_SAVES__
-	pop	cx
-	pop	dx
-#endif
-	pop	si
-	ret
-
-OUTSTR.LOOP:
-	stosb
-	cmp	di,bx
-	jb	OUTSTR.NEXT
-	call	CALL.FLUSHOUT
-OUTSTR.NEXT:
-	lodsb
-	test	al,al
-	jne	OUTSTR.LOOP
-	mov	[_outbufptr],di
-# if !__CALLER_SAVES__
-	mov	si,cx
-	mov	di,dx
-# endif
-# endasm
-#endif /* __AS386_16__ */
-
-#if __AS386_32__
-# asm
-# if !__CALLER_SAVES__
-	mov	edx,edi
-	push	esi
-#  define TEMPS 4
-# else
-#  define TEMPS 0
-# endif
-# if !__FIRST_ARG_IN_AX__
-	mov	esi,TEMPS+_outstr.s[esp]
-# else
-#  if ARGREG == DREG
-	xchg	esi,eax
-#  else
-	mov	esi,ebx
-#  endif
-# endif
-	mov	edi,[_outbufptr]
-	mov	ecx,[_outbuftop]
-	br	OUTSTR.NEXT
-
-CALL.FLUSHOUT:
-	push	esi
-# if !__CALLER_SAVES__
-	push	edx
-# endif
-	push	eax
-	mov	[_outbufptr],edi
-	call	_flushout
-	mov	edi,[_outbufptr]
-	mov	ecx,[_outbuftop]
-	pop	eax
-# if !__CALLER_SAVES__
-	pop	edx
-# endif
-	pop	esi
-	ret
-
-OUTSTR.LOOP:
-	stosb
-	cmp	edi,ecx
-	jb	OUTSTR.NEXT
-	call	CALL.FLUSHOUT
-OUTSTR.NEXT:
-	lodsb
-	test	al,al
-	jne	OUTSTR.LOOP
-	mov	[_outbufptr],edi
-# if !__CALLER_SAVES__
-	pop	esi
-	mov	edi,edx
-# endif
-# endasm
-#endif /* __AS386_32__ */
 #endif /* C_CODE etc */
 }
 
@@ -733,7 +555,6 @@ unsigned num;
     outstr(pushudec(str + sizeof str - 1, num));
 }
 
-#ifdef MC6809
 #ifdef DEBUG
 
 /* print unsigned value, hex format (like outhex except value_t is larger) */
@@ -779,7 +600,6 @@ register value_t num;
 }
 
 #endif /* DEBUG */
-#endif /* MC6809 */
 
 /* push decimal digits of an unsigned onto a stack of chars */
 

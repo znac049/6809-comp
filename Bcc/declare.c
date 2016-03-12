@@ -693,34 +693,8 @@ PRIVATE void declfunc()
        if( main_flag > 2 )
           globl("environ");
     }
-#ifdef I8088
-    regfuse = 0;
-#endif
     lbrace();
     compound();
-#ifdef I8088
-    if (regfuse & callee1mask) {
-        outstr("! Register");
-        if (regfuse & INDREG0 & callee1mask) outstr(" BX");
-        if (regfuse & INDREG1 & callee1mask) outstr(" SI");
-	if (regfuse & INDREG2 & callee1mask) outstr(" DI");
-	outstr(" used in function ");
-	outnstr(funcname);
-	if (optimise && !callersaves) {
-	    outstr(funcname);
-	    outnstr(".off = 0");
-	}
-    } else
-	if (optimise && !callersaves) {
-	    outstr(funcname);
-	    outstr(".off = ");
-#ifndef I80386
-	    outnhex(4);
-#else
-	    outnhex(i386_32?12:4);
-#endif
-	}
-#endif
     clearfunclabels();
 }
 
@@ -1052,11 +1026,9 @@ PUBLIC void needvarname()
 
 PUBLIC void program()
 {
-#ifdef BUILTIN_CPP
     if (orig_cppmode)
 	cppscan(0);
     else
-#endif
     {
 	nextsym();
 	while (sym != EOFSYM)
@@ -1127,10 +1099,8 @@ PRIVATE bool_pt regdecl()
     if (gvarsymptr->type->constructor != POINTER)
 	return FALSE;
 #endif
-#ifdef MC6809
     if (gvarsymptr->type->constructor != POINTER)
 	return FALSE;
-#endif
     if (!(regavail = regregs & ~reguse))
 	return FALSE;
     gvarsymptr->flags = REGVAR;
@@ -1150,7 +1120,7 @@ PUBLIC void rparen()
 
 PUBLIC void semicolon()
 {
-    outnstr("!BCC_EOS");
+    outnstr(";BCC_EOS");
     if (sym != SEMICOLON)
 	need(';');
     else
