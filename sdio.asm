@@ -1,5 +1,7 @@
-SDCard		equ	$ffd8
-sdData		equ	0
+;--------------------------------------------------------------------------------
+
+SDCard		equ	$ffd8			; SD controller base address
+sdData		equ	0			; data register
 sdCtrl		equ	1
 sdStatus	equ	1
 sdLBA0		equ	2
@@ -36,7 +38,7 @@ pt		pte
 pt2		pte
 pt3		pte
 pt4		pte
-sig		rmb	2			; Expect $55AA
+sig		rmb	2			; Expect 55AA
 		endstruct
 
 ;--------------------------------------------------------------------------------
@@ -116,4 +118,128 @@ wrWait 		ldb	sdStatus,u		; Wait for byte to be available
 
 		puls	b,y,u,pc		; restore regs...and return
 
+
+;--------------------------------------------------------------------------------
+; loadMBR - read the master boot record from the SD card. This is to be found
+;	    on block #0. 
+;
+; on entry:
+;	Y - address of buffer to read into
+;
+; trashes:
+;
+; returns:
+;	CC.Z - indicates zero if MBR contains valid signature
+;
+MBRLBA		fqb     0			; LBA equivalent to $00000000
+
+loadMBR 	pshs	x,d
+
+		leax    MBRLBA,pcr
+		bsr	rdBlock
+
+		ldd	mbr.sig,y		; does it have a valid MBR sig
+		cmpd	#$55aa	
+
+		puls	x,d,pc			; ...and return
+
+            
+;--------------------------------------------------------------------------------
+; clearLBA - reset the LBA
+;
+; on entry:
+;	X - LBA_t*
+;
+; trashes: nothing
+;
+; returns: nothing
+;
+clearLBA	pshs    a
+
+		lda     #0
+		sta     ,x
+		sta     1,x
+		sta     2,x
+		sta     3,x
+                        
+		puls    a,pc			; restore...and return
+
+
+;--------------------------------------------------------------------------------
+; addLBAs - add two LBAs together
+;
+; on entry:
+;	X - LBA_t* #1
+;   Y - LBA_t* #2
+;
+; trashes: Y
+;
+; returns:
+;   X - LBA_t* #1 - now #1 + #2
+;
+addLBAs:	pshs    d
+
+            
+		ldd     ,x
+		addd    ,y
+		std     ,x
+		bcc     abNoOv
+       
+		ldd     2,x
+		addd    #1
+		std     2,x
+            
+abNoOv:		ldd     2,x
+		addd    2,y
+		std     2,x
+
+		puls    d,pc			; restore...and return
+
+
+;--------------------------------------------------------------------------------
+; logToPhysLBA - convert the logical sector to a physical sector
+;
+; on entry:
+;	X - LBA_t*
+;
+; trashes: nothing
+;
+; returns: nothing
+;
+logToPhysLBA
+		pshs    y
+
+		leay	mbr.pt,pcr
+		bsr	addLBAs
+                        
+		puls    y,pc			; restore...and return
+
+
+;--------------------------------------------------------------------------------
+; setLBA - set the LBA to read/write
+;
+; on entry:
+;	X - LBA_t*
+;
+; trashes: nothing
+;
+; returns: nothing
+;
+setLBA		pshs    y,a
+
+		leay    SDCard,pcr
+		lda     1,x
+		sta     sdLBA0,y
+            
+		lda	,x
+		sta     sdLBA1,y
+            
+		lda     3,x
+		sta     sdLBA2,y
+            
+		lda     #00			; SD card only uses 3 bytes of LBA
+		sta     sdLBA3,y
+		bsr	p2hex
+            
+		puls    y,a,pc			; restore...and return
 

@@ -1,4 +1,4 @@
-SRC=newmon.asm serio.asm sdio.asm
+SRC=newmon.asm serio.asm sdio.asm fat16.asm output.asm
 
 INSTALLDIR=/cygdrive/c/Users/bob/OneDrive/Projects/multicomp/ROMS/6809
 
@@ -8,7 +8,8 @@ newmon.hex:	newmon.s19
 		m2i <newmon.s19 >newmon.hex
 
 newmon.s19:	$(SRC)
-		lwasm --6809 --format=srec --output=newmon.s19 newmon.asm
+		lwasm --6809 --format=obj --output=newmon.o newmon.asm
+		lwlink --entry=RESET --format=srec --output=newmon.srec newmon.o
 
 clean:
 		rm *~ *.hex *.s19 *.lst
