@@ -8,6 +8,8 @@
 
 int base = MEMSIZE-1;
 int mem[MEMSIZE];
+int lowestAddr = 0xffff;
+int highestAddr = 0;
 
 int getWord(FILE *fd) {
   int c1 = fgetc(fd);
@@ -18,6 +20,18 @@ int getWord(FILE *fd) {
   }
 
   return (c1<<8) | c2;
+}
+
+void poke(int addr, int val) {
+  mem[addr] = val;
+
+  if (addr < lowestAddr) {
+    lowestAddr = addr;
+  }
+
+  if (addr > highestAddr) {
+    highestAddr = addr;
+  }
 }
 
 int processSegment(FILE *fd) {
@@ -66,7 +80,9 @@ int processSegment(FILE *fd) {
 	exit(1);
       }
 
-      mem[addr+i] = c;
+      poke(addr+i, c);
+
+      res = addr;
     }
   }
 
@@ -84,5 +100,6 @@ int main(int argc, char **argv)
   while ((segAddr = processSegment(stdin)) != -1) {
     printf("%04x\n", segAddr);
   }
- 
+
+  printf("Mem: 0x%04x - 0x%04x\n", lowestAddr, highestAddr);
 }

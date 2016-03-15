@@ -28,26 +28,7 @@ but the implementation is vastly different.  This is managed via
 conditional compiles throughout the startup code for each of the
 supported machines. */
 
-#ifdef TARGET_COCO /* CoCo memory map */
-
-#define COCO_RAMROM_MODE 0xFFDE
-#define COCO_ALLRAM_MODE 0xFFDF
-#define COCO_PAGE1 0xFFD5
-
-/* SAM M1 and M0 adjusts the memory size */
-
-#define BASIC_WARMSTART_FLAG 0x0071
-#define BASIC_START 0xA027
-
-#define __STACK_TOP 0x6800
-
-#else /* Simulator (default) memory map */
-
-#define SIM_EXIT_REG 0xFF01
-
-#define __STACK_TOP 0xFE00
-
-#endif
+#define __STACK_TOP 0x0800
 
 
 	/* Declare all linker sections, and combine them into a single bank */
@@ -70,16 +51,8 @@ supported machines. */
 	.area	.text
  	.globl __exit
 __exit:
-#ifdef TARGET_COCO
-	;; Go back to ROM/RAM mode
-	sta	COCO_RAMROM_MODE
-	clr	BASIC_WARMSTART_FLAG
-	jmp   BASIC_START
-#else
 	tfr	x,d
-	stb	SIM_EXIT_REG
 	bra	__exit
-#endif
 
 
    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -97,16 +70,8 @@ __start:
 	tfr	a,dp
 #endif
 
-#ifdef TARGET_COCO
-	;; Turn off interrupts
-	orcc #(0x10|0x40)
-	
-	;; Setup All RAM Mode
-	sta COCO_ALLRAM_MODE
-#endif /* TARGET_COCO */
-
 	;; Initialize the stack
-	lds	#__STACK_TOP - 2
+	lds	#__STACK_TOP 
 	
 	;; Call any "initializer" functions
 	ldu	#s_.ctors
@@ -118,10 +83,6 @@ __ctors_loop:
 	bra	__ctors_loop
 __ctors_done:
 
-	;; Enable interrupts on the simulator
-#ifndef TARGET_COCO
-	andcc	#~(0x10|0x40)
-#endif
 
 	;; Set up the environment
 
@@ -148,7 +109,7 @@ __dtors_done:
 #ifdef __DRET__
 	tfr	d,x
 #endif
-	jmp	_exit
+	jmp	__exit
 
 
 
