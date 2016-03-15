@@ -1,5 +1,0 @@
-section	vecseg	load	$fff0
-section	code	load	$e000
-section	strseg
-
-entry	RESET

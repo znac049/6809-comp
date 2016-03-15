@@ -7,16 +7,22 @@
 		pragma	autobranchlength
 		pragma	cescapes
 
+		include "macros.asm"
+		include "segments.asm"
+
 ROMBeg		equ	$E000		;
 ROMSize		equ	8192
 
 CR		equ	13
 LF		equ	10
 
+		section	bss
+		org	0
+	
+		include "vars.asm"
+	
 
-	
-		section	codeseg
-	
+		section	code
 		org	ROMBeg
 
 		include	"sdio.asm"
@@ -186,7 +192,7 @@ SWI1:		lda     #'Z
 		;bsr    pChar
 		rti
 
-		section	strseg
+		section	data
             
 WelcomeMsg	fcc	"\r\n\n6809 monitor.\r\n\n"
         	fcn     "Copyright (c) Bob Green, 2016\r\n"
@@ -248,8 +254,9 @@ noFileMsg   	fcn     "No boot file found\r\n"
 	
 ;		fill	$FF,Empty-*
 
-		section	vecseg
-
+		section	vectors
+		org	$fff0
+	
 		fdb	Nothing				; Reserved
 		fdb	Nothing				; SWI3
 		fdb	Nothing				; SWI2

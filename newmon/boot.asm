@@ -100,7 +100,7 @@ itsFAT		leay    8,y			; First sector LBA
 		leax    FATStartMsg,pcr
 		bsr	pStr
             
-		leax    FAT_LBA_t,pcr
+		leax    FATLBA,pcr
 		bsr	clearLBA
             
 		ldd     14,y			; # reserved sectors
@@ -115,7 +115,7 @@ itsFAT		leay    8,y			; First sector LBA
 ;
 ;   (<number of sectors per FAT> * <number of FATs)) + <start of FAT #1 LBA>
 ;
-		leax    Root_LBA_t,pcr		; LBA of start of root directory
+		leax    RootLBA,pcr		; LBA of start of root directory
 		bsr	clearLBA
             
 		ldd     22,y			; # sectors per FAT
@@ -151,8 +151,8 @@ oneFAT:		ldd     22,y
 		bra     FATSok
                         
 FATSok
-		leay    FAT_LBA_t,pcr
-		leax    Root_LBA_t,pcr
+		leay    FATLBA,pcr
+		leax    RootLBA,pcr
 		bsr	addLBAs
 		bra     bootBlkOk
             
@@ -163,7 +163,7 @@ badBootBlk	leax    bootSecProb,pcr
 bootBlkOk	leax    rootStartMsg,pcr
 		bsr	pStr
             
-		leax    Root_LBA_t,pcr
+		leax    RootLBA,pcr
 		bsr	pLBA
 		bsr	pNL
             

@@ -47,6 +47,8 @@ int processSegment(FILE *fd) {
     len = getWord(fd);
     addr = getWord(fd);
 
+    fprintf(stderr, "len=%04x, addr=%04x\n", len, addr);
+
     if ((len == -1) || (addr == -1)) {
       fprintf(stderr, "Badly formatted CHUNK segment.\n");
       exit(1);
