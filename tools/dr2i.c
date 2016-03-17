@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "intelHex.h"
+
 #define OK 0
 #define ERR -1
 
@@ -23,7 +25,7 @@ int getWord(FILE *fd) {
 }
 
 void poke(int addr, int val) {
-  mem[addr] = val;
+  mem[addr] = val & 0xff;
 
   if (addr < lowestAddr) {
     lowestAddr = addr;
@@ -97,9 +99,23 @@ int main(int argc, char **argv)
     mem[i] = -1;
   }
 
-  while ((segAddr = processSegment(stdin)) != -1) {
-    printf("%04x\n", segAddr);
+  while ((segAddr = processSegment(stdin)) != -1)
+    ;
+
+  ihexReset();
+
+  for (i=lowestAddr; i<=highestAddr; i++) {
+    int val = mem[i];
+
+    if (val < 0) {
+      val = 0x5a;
+    }
+    else {
+      val = val & 0xff;
+    }
+
+    ihexPut(i-lowestAddr, (char) val);
   }
 
-  printf("Mem: 0x%04x - 0x%04x\n", lowestAddr, highestAddr);
+  ihexFinish();
 }

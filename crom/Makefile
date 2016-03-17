@@ -1,10 +1,13 @@
-OBJ=crt0.o monitor.o uart.o sdio.o
+OBJ=crt0.o monitor.o uart.o sdio.o strlen.o strcmp.o
 
 CC=gcc09
 LD=ld09
 
-ROM_BASE='*'
-LDFLAGS=-Tvec 
+LDFLAGS=-Tvec
+
+all:	mon
+
+-include .depend
 
 mon:	$(OBJ)
 	$(LD) -o mon $(LDFLAGS) $(OBJ)
@@ -13,4 +16,7 @@ crt0.o: crt0.S
 	$(CC) -o crt0.o crt0.S -c
 
 clean:
-	rm *.o mon *~
+	rm -f *.o mon *~ .depend
+
+depend:
+	$(CC) -MM *.c >.depend
