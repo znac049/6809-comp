@@ -11,12 +11,18 @@ loop:
 		tfr	x,d	
 		sta	$ff71
 		stb	$ff73
-		lsrd
-		lsrd
-		lsrd
-		lsrd
+		lsra
+		lsra
+		lsra
+		lsra
+	
+		lsrb
+		lsrb
+		lsrb
+		lsrb
+	
 		sta	$ff70
-		sta	$ff72
+		stb	$ff72
 		
 		lda	#$55
 		sta	,x

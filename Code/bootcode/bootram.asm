@@ -6,6 +6,8 @@
 		pragma	autobranchlength
 		pragma	cescapes
 
+		pragma	6809	; Just while we are testing with 6809 hardware
+
 		include "const.asm"
 
 	
@@ -39,13 +41,13 @@ Start		equ	*
 RESET
 		clra
 		tfr	a,dp		; DP is page 0
-            
+             
 ; Minimal serial IO
-		ldx	#Uart0Base
-		lda	#$03		; Master reset
-		sta	StatusReg,x
-		lda	#$15		; 8N1, div by 16
-		sta	StatusReg,x
+		ldx	#Uart0Base 
+*		lda	#$03		; Master reset
+*		sta	StatusReg,x
+*		lda	#$15		; 8N1, div by 16
+*		sta	StatusReg,x
 
 		lda	#'Z'
 		sta	DataReg,x
@@ -105,7 +107,9 @@ quickMemCheck   ldd     #ROMBase
 	       	bge   	InROM
 	       	ldd   	Start
 InROM
-		tfr	d,y	; Y contains end stop address
+		pshs	d	; Stack the end address
+		tfr	s,u
+	
 		ldx	#0	; Address to start testing from
 
 		orcc	#$ff	; no interrupts while we test, in case
@@ -116,16 +120,38 @@ InROM
 		lda	#$55
 doQuickByte	
 		ldb	,x	; Take copy of ram at X
+		pshs	b
+	
+* Display address being tested
+		tfr	x,d	
+		sta	$ff71
+		stb	$ff73
+		lsra
+		lsra
+		lsra
+		lsra
+	
+		lsrb
+		lsrb
+		lsrb
+		lsrb
+	
+		sta	$ff70
+		stb	$ff72
+
+		lda	#$55
 		sta	,x	; Write our test pattern
 		eora	,x	; result should be 0
 		bne	doQuickEnd
 
+		puls	b	; restore old value
+		stb	,x
+	
 		leax	1,x	; on to the next...
-
-		
-
-		bra	doQuickByte
+		cmpx	,u
+		bne	doQuickByte
 
 doQuickEnd
-*
+		leas	2,s	; drop the end address
+	
 		rts
