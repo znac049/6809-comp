@@ -1,0 +1,5 @@
+section CSEG load E000
+section	DSEG
+section DPSEG load 0000
+section MEM load 0400
+section VECTORS high 10000

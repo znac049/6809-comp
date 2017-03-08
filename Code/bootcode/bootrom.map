@@ -1,0 +1,129 @@
+Section: CSEG (bootrom.o) load at E000, length 0065
+Section: CSEG (conio.o) load at E065, length 012E
+Section: CSEG (cfio.o) load at E193, length 00F4
+Section: CSEG (commands.o) load at E287, length 00A4
+Section: CSEG (os9fs.o) load at E32B, length 0031
+Section: CSEG (swihand.o) load at E35C, length 001D
+Section: CSEG (vectors.o) load at E379, length 0001
+Section: DSEG (bootrom.o) load at E37A, length 0055
+Section: DSEG (cfio.o) load at E3CF, length 0059
+Section: DSEG (commands.o) load at E428, length 00A0
+Section: DSEG (swihand.o) load at E4C8, length 000E
+Section: MEM (bootrom.o) load at 0400, length 0285
+Section: MEM (os9fs.o) load at 0685, length 000E
+Section: VECTORS (vectors.o) load at FFF0, length 0010
+Symbol: \02CSEG (bootrom.o) = E000
+Symbol: \02CSEG (cfio.o) = E193
+Symbol: \02CSEG (commands.o) = E287
+Symbol: \02CSEG (conio.o) = E065
+Symbol: \02CSEG (os9fs.o) = E32B
+Symbol: \02CSEG (swihand.o) = E35C
+Symbol: \02CSEG (vectors.o) = E379
+Symbol: \02DSEG (bootrom.o) = E37A
+Symbol: \02DSEG (cfio.o) = E3CF
+Symbol: \02DSEG (commands.o) = E428
+Symbol: \02DSEG (swihand.o) = E4C8
+Symbol: \02MEM (bootrom.o) = 0400
+Symbol: \02MEM (os9fs.o) = 0685
+Symbol: \02VECTORS (vectors.o) = FFF0
+Symbol: @next\0122 (conio.o) = E075
+Symbol: @next\0157 (conio.o) = E0D8
+Symbol: @wait\0129 (conio.o) = E084
+Symbol: @wait\0136 (conio.o) = E093
+Symbol: RESET (bootrom.o) = E000
+Symbol: SWI0 (swihand.o) = E4CD
+Symbol: SWI1 (swihand.o) = E4D3
+Symbol: SWIDone (swihand.o) = E4CC
+Symbol: SWIMax (swihand.o) = E4CA
+Symbol: SWITable (swihand.o) = E4C8
+Symbol: SWIend (swihand.o) = E4CC
+Symbol: WelcomeMsg (bootrom.o) = E37A
+Symbol: backsp (conio.o) = E174
+Symbol: bootCmd (commands.o) = E2CE
+Symbol: bootLSN.p (os9fs.o) = 068D
+Symbol: bootMsg (commands.o) = E447
+Symbol: bootSize (os9fs.o) = 0691
+Symbol: cfInfo (cfio.o) = E238
+Symbol: cfInfoCmd (commands.o) = E2E8
+Symbol: cfInit (cfio.o) = E19A
+Symbol: cfRdNext (cfio.o) = E1F6
+Symbol: cfRdWait (cfio.o) = E1F6
+Symbol: cfRead (cfio.o) = E1E3
+Symbol: cfReadBuff (cfio.o) = E1F2
+Symbol: cfSetLSN (cfio.o) = E220
+Symbol: cfWait (cfio.o) = E193
+Symbol: cfWrNext (cfio.o) = E20F
+Symbol: cfWrWait (cfio.o) = E20F
+Symbol: cfWrite (cfio.o) = E205
+Symbol: cfiCont (cfio.o) = E1CD
+Symbol: cfiFWMsg (cfio.o) = E412
+Symbol: cfiModelMsg (cfio.o) = E41D
+Symbol: cfiSerMsg (cfio.o) = E407
+Symbol: cfinfoMsg (commands.o) = E46B
+Symbol: cfinfoUsage (commands.o) = E484
+Symbol: cmdFunc (bootrom.o) = 0401
+Symbol: cmdLoop (bootrom.o) = E039
+Symbol: cmdTable (commands.o) = E428
+Symbol: compareCmd (commands.o) = E299
+Symbol: conInit (conio.o) = E065
+Symbol: doNothing (vectors.o) = E379
+Symbol: dot (conio.o) = E0A8
+Symbol: findCmd (commands.o) = E287
+Symbol: findEnd (commands.o) = E298
+Symbol: findLoop (commands.o) = E287
+Symbol: gChar (conio.o) = E070
+Symbol: getLine (conio.o) = E140
+Symbol: glNextChar (conio.o) = E146
+Symbol: helpCmd (commands.o) = E2F3
+Symbol: helpDone (commands.o) = E327
+Symbol: helpMsg (commands.o) = E4B1
+Symbol: helpNext (commands.o) = E2FE
+Symbol: helpSkip (commands.o) = E30F
+Symbol: line (bootrom.o) = 0403
+Symbol: loadboot (os9fs.o) = E32C
+Symbol: lsn.p (os9fs.o) = 0685
+Symbol: mcDone (commands.o) = E2CC
+Symbol: mcFail (commands.o) = E2C9
+Symbol: mcFullMatch (commands.o) = E2BB
+Symbol: mcHalfMatch (commands.o) = E2AC
+Symbol: mcNext (commands.o) = E29F
+Symbol: mcNoMatch (commands.o) = E2C0
+Symbol: newline (conio.o) = E18B
+Symbol: noCF (cfio.o) = E1C6
+Symbol: noCFMsg (cfio.o) = E3CF
+Symbol: noHelp (commands.o) = E322
+Symbol: noMatch (commands.o) = E298
+Symbol: noRam (bootrom.o) = E01E
+Symbol: notDot (conio.o) = E0AA
+Symbol: os9check (os9fs.o) = E32B
+Symbol: p1hex (conio.o) = E111
+Symbol: p1hexNum (conio.o) = E120
+Symbol: p1hexPr (conio.o) = E122
+Symbol: p2hex (conio.o) = E0FF
+Symbol: p4hex (conio.o) = E0F3
+Symbol: pChar (conio.o) = E07F
+Symbol: pLBA (conio.o) = E0E5
+Symbol: pNL (conio.o) = E126
+Symbol: pQuad.p (conio.o) = E134
+Symbol: pStr (conio.o) = E0AE
+Symbol: pStrEnd (conio.o) = E0BA
+Symbol: pStrNext (conio.o) = E0B0
+Symbol: pnStr (conio.o) = E0BC
+Symbol: pnStrEnd (conio.o) = E0CF
+Symbol: pnStrNext (conio.o) = E0C4
+Symbol: pnpStr (conio.o) = E0D1
+Symbol: pnpStrEnd (conio.o) = E0E3
+Symbol: ppChar (conio.o) = E08E
+Symbol: priCFMsg (cfio.o) = E3E7
+Symbol: ramEnd (bootrom.o) = 0683
+Symbol: ramOk (bootrom.o) = E01A
+Symbol: rootLSN.p (os9fs.o) = 0689
+Symbol: secBuff (bootrom.o) = 0483
+Symbol: secCFMsg (cfio.o) = E3F7
+Symbol: secPres (cfio.o) = E1BC
+Symbol: swiHand (swihand.o) = E35C
+Symbol: temp (bootrom.o) = 0400
+Symbol: tstLoop (bootrom.o) = E012
+Symbol: unkCmd (bootrom.o) = E05C
+Symbol: unknownCmd (bootrom.o) = E3BC
+Symbol: zzz (bootrom.o) = E023
