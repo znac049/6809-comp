@@ -14,7 +14,7 @@ install: all
 	cp m2i dr2i $(INSTALL_DIR)
 
 clean:
-	rm -f *.o dr2i m2i *~ .depend
+	rm -f *.o dr2i m2i *~ .depend *#
 
 depend:
 	$(CC) -MM *.c >.depend

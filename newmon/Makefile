@@ -4,8 +4,8 @@ INSTALLDIR=/cygdrive/c/Users/bob/OneDrive/Projects/multicomp/ROMS/6809
 
 all:		newmon.hex
 
-newmon.hex:	newmon.s19
-		m2i <newmon.s19 >newmon.hex
+newmon.hex:	newmon.srec
+		m2i <newmon.srec >newmon.hex
 
 newmon.s19:	$(SRC)
 		lwasm --6809 --format=obj --output=newmon.o newmon.asm
