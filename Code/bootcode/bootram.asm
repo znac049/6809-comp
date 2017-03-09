@@ -21,7 +21,7 @@ line		rmb	MAXLINE
 	
 secBuff		rmb	SECSIZE
 
-ramEnd		rmb    2
+ramEnd		rmb    	2
 
 
 lsn.p		rmb	4	; The CF sector number
@@ -43,14 +43,11 @@ RESET
 		tfr	a,dp		; DP is page 0
              
 ; Minimal serial IO
-		ldx	#Uart0Base 
+*		ldx	#Uart0Base 
 *		lda	#$03		; Master reset
 *		sta	StatusReg,x
 *		lda	#$15		; 8N1, div by 16
 *		sta	StatusReg,x
-
-		lda	#'Z'
-		sta	DataReg,x
 
 		leas	Start,pcr	; Initial stack
 
@@ -58,6 +55,9 @@ RESET
 		bsr	pStr		; say hello
 
 		bsr	quickMemCheck
+		ldd	ramEnd
+		bsr	p4hex
+		bsr	pNL
 				
 ****		bsr	cfInit		; See if we have a CF device
 
@@ -92,6 +92,7 @@ unknownCmd	fcn	"Unknown command.\r\n"
 
 
 		include	"conio.asm"
+		include "sdio.asm"
 		include "cfio.asm"
 		include "commands.asm"
 		include "os9fs.asm"
@@ -107,8 +108,7 @@ quickMemCheck   ldd     #ROMBase
 	       	bge   	InROM
 	       	ldd   	Start
 InROM
-		pshs	d	; Stack the end address
-		tfr	s,u
+		std	ramEnd	; Do not test beyond this point
 	
 		ldx	#0	; Address to start testing from
 
@@ -122,21 +122,22 @@ doQuickByte
 		ldb	,x	; Take copy of ram at X
 		pshs	b
 	
-* Display address being tested
+* Display the address being tested
 		tfr	x,d	
 		sta	$ff71
 		stb	$ff73
+		
 		lsra
 		lsra
 		lsra
 		lsra
-	
-		lsrb
-		lsrb
-		lsrb
-		lsrb
-	
 		sta	$ff70
+		
+		lsrb
+		lsrb
+		lsrb
+		lsrb
+	
 		stb	$ff72
 
 		lda	#$55
@@ -148,10 +149,10 @@ doQuickByte
 		stb	,x
 	
 		leax	1,x	; on to the next...
-		cmpx	,u
+		cmpx	ramEnd
 		bne	doQuickByte
 
 doQuickEnd
-		leas	2,s	; drop the end address
+		stx	ramEnd
 	
 		rts
