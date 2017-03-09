@@ -1,8 +1,7 @@
 *.hex
-*.s19
-*.srec
+*.s9
 *~
-
+*.dsk
 *.o
 *.exe
 .depend
