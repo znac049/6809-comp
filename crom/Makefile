@@ -1,9 +1,9 @@
 OBJ=crt0.o monitor.o uart.o sdio.o strlen.o strcmp.o
 
 CC=gcc09
-LD=ld09
+LD=gcc09
 
-LDFLAGS=-Tvec
+LLDFLAGS=-Tvec
 
 all:	mon
 
