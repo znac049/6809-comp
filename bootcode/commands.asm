@@ -4,6 +4,50 @@
 ; Copyright(c) 2016, Bob Green
 ;
 
+DBGS		macro
+		pshs	a
+
+		lda	#' '
+		bsr	pChar
+
+		lda	#\1
+		bsr	pChar
+
+		lda	#'='
+		bsr	pChar
+
+		lda	,s
+		bsr	p2hex
+		
+		lda	#' '
+		bsr	pChar
+
+		puls	a
+		endm
+
+
+DBGL		macro
+		pshs	d
+
+		lda	#' '
+		bsr	pChar
+
+		lda	#\1
+		bsr	pChar
+
+		lda	#'='
+		bsr	pChar
+
+		ldd	,s
+		bsr	p4hex
+		
+		lda	#' '
+		bsr	pChar
+
+		puls	d
+		endm
+
+
 *******************************************************************
 * findCmd - look up command in command table
 *
@@ -150,43 +194,39 @@ srNext		bsr	gChar
 		blt     srBadChar
 		cmpa    #'9'
 		bgt     srBadChar
-		suba	#'0'
 		sta	srType
 
 * Next two bytes are count
-       	   	lda     #'C'
-		bsr	pChar
-
        	        bsr     g2hex
 		bcs	srBadChar
 		sta	srCount
 		sta	srXSum		; Initialise checksum
 
-		bsr	p2hex
+       	   	DBGS    'C'
 
 * What comes next is record type specific
 
-* Some records, we silently ignore
+* ...Some records, we silently ignore
        		lda	srType
-		cmpa	#0
+		cmpa	#'0'
 		beq	srIgnore
-		cmpa	#5
+		cmpa	#'5'
 		beq	srIgnore
-		cmpa	#9
+		cmpa	#'9'
 		beq	srIgnore
-		cmpa	#1
+		cmpa	#'1'
 		beq	srOne
 		bra	srNotSupported
 
 
 * S1 record - next 4 bytes are the load address
 srOne		
-		lda	#'A'
-		bsr	pChar
-
 		bsr	g4hex
 		bcs	srBadChar
 		std	srAddr
+
+		DBGL	'A'
+
 		bsr	p4hex
 
 		adda	srXSum
@@ -222,18 +262,15 @@ sr1Next
 
 sr1DataDone
 * Next byte will be the checksum
-       	    	lda     #'X'
-		bsr	pChar
-
        	    	bsr     g2hex
 		bcs	srBadChar
 		tfr	a,b
 
-		bsr	p2hex
-		bsr	pNL
+		DBGS	'X'
 
 		lda	srXSum
-		bsr	p2hex
+
+		DBGS	'x'
 		bsr	pNL
 
 		cmpb	srXSum
@@ -262,7 +299,6 @@ srIgnore        bsr    	srSkip
 srNotSupported	leax	srRecNotSupported,pcr
 		bsr	pStr
 		lda	srType
-		adda	#'0'
 		bsr	pChar
 		bsr	pNL
 		bra	srDone2
