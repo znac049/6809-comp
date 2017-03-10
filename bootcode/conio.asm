@@ -459,7 +459,7 @@ g1hex		bsr	gChar
 		cmpa	#'0'
 		blt	g1hBadChar
 		cmpa	#'9'
-		blt	g1hNum
+		ble	g1hNum
 * Not a number - is it A-F or a-f
       	       	;anda    #$df		; Convert to upper case
 		cmpa	#'A'

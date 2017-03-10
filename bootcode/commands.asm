@@ -206,7 +206,7 @@ sr1Next
 		bsr	g2hex
 		bcs	srBadChar
 
-		bsr	pChar
+		bsr	p2hex
 
 		tfr	a,b
 		addb	srXSum
