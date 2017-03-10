@@ -5,6 +5,7 @@ Uart0Base	equ	$FF00
 CFBase		equ	$FF10
 RegBase		equ	$FF30
 MMUBase		equ	$FF40
+SDBase		equ	$FFD8
 
 ; mc6850 Uart registers
 StatusReg	equ	0
@@ -45,6 +46,16 @@ CMD.SETFEATURES	equ	$EF
 ; When CS1 is asserted (low)
 CF.AltStatus	equ	22	; Read
 CF.DevControl	equ	22	; Write
+
+; SD Controller registers
+SD.Data		equ	0			; data register
+SD.Ctrl		equ	1
+SD.Status	equ	1
+SD.LBA0		equ	2
+SD.LBA1		equ	3
+SD.LBA2		equ	4
+SD.LBA3		equ     5
+
 
 
 BS		equ	8

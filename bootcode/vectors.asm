@@ -3,16 +3,6 @@
 ;
 ; Copyright(c) 2016, Bob Green
 ;
-		pragma	autobranchlength
-		pragma	cescapes
-
-		include "const.asm"
-
-RESET		extern
-swiHand		extern
-
-	
-		section CSEG
 
 *******************************************************************
 * doNothing - null interrupt handler
@@ -24,7 +14,7 @@ swiHand		extern
 doNothing	rti
 
 
-		section VECTORS
+		org	$fff0
 
 		fdb	doNothing		; Reserved
 		fdb	doNothing		; SWI3

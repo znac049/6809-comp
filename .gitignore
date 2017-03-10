@@ -1,5 +1,7 @@
 *.hex
 *.s9
+*.lst
+*.map
 *~
 *.dsk
 *.o

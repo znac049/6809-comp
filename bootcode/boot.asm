@@ -8,31 +8,30 @@
 
 		pragma	6809	; Just while we are testing with 6809 hardware
 
+* Set to 1 if this is being assembled as a boot rom
+BOOTROM		= 0
+
+
 		include "const.asm"
-
-	
+ IFNE BOOTROM
+		org	$0
+ ELSE
 		org	$400
-	
-temp		rmb	1
-	
-cmdFunc		rmb	2
-
-line		rmb	MAXLINE
-	
-secBuff		rmb	SECSIZE
-
-ramEnd		rmb    	2
-
-
-lsn.p		rmb	4	; The CF sector number
-
-rootLSN.p	rmb	4	; The start of the root directory
-bootLSN.p	rmb	4	; The fisrt LSN of the boot file
-bootSize	rmb	2	; Length in bytes of the boot file
+ ENDC
 
 
 
+		include "vars.asm"
+
+ IFNE BOOTROM
+		org	$e000
+ ELSE
 		org	$c000
+ ENDC
+
+
+*************************************************************
+
 Start		equ	*
 
 ; Hard reset
@@ -54,12 +53,18 @@ RESET
 		leax	WelcomeMsg,pcr
 		bsr	pStr		; say hello
 
+* See how much RAM we have
 		bsr	quickMemCheck
+		leax	MemoryMsg,pcr
+		bsr	pStr
 		ldd	ramEnd
 		bsr	p4hex
 		bsr	pNL
 				
-****		bsr	cfInit		; See if we have a CF device
+		bsr	dkInit		; Initialise disk(s)
+
+		leax	CommandMsg,pcr
+		bsr	pStr
 
 cmdLoop		lda	#'.'
 		bsr	pChar
@@ -85,24 +90,18 @@ unkCmd		leax	unknownCmd,pcr
 
 	
 WelcomeMsg	fcc	"\r\n\n6809/6309 SBC.\r\n\n"
-        	fcc     "Copyright (c) Bob Green, 2016\r\n\n"
-		fcn	"Memory size: "
+        	fcn     "Copyright (c) Bob Green, 2016\r\n\n"
+
+MemoryMsg	fcn	"Memory size: "
+
+CommandMsg	fcn	"Type 'help' for a list of commands\r\n\n"
 
 unknownCmd	fcn	"Unknown command.\r\n"
 
 
-		include	"conio.asm"
-		include "sdio.asm"
-		include "cfio.asm"
-		include "commands.asm"
-		include "os9fs.asm"
-		include "swihand.asm"
-;
-
 * Non-destructive memory check. Doesn't do the full works, just
 * tests for simple write-read. If this monitor is running in RAM,
 * make sure we don't overwrite!
-
 quickMemCheck   ldd     #ROMBase
 	       	cmpd  	Start
 	       	bge   	InROM
@@ -156,3 +155,20 @@ doQuickEnd
 		stx	ramEnd
 	
 		rts
+
+
+* Pull in all the other good stuff(tm)
+
+		include	"conio.asm"
+		include "dkio.asm"
+		include "sdio.asm"
+		include "cfio.asm"
+		include "commands.asm"
+		include "os9fs.asm"
+		include "swihand.asm"
+;
+
+ IFNE BOOTROM
+
+		include "vectors.asm"
+ ENDC

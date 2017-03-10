@@ -1,6 +1,0 @@
-define basesympat s_%s
-define lensympat l_%s
-section	vectors	load	fff0
-section	code	load	e000
-section	*,!bss
-entry	RESET

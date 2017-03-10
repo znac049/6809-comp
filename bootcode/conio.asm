@@ -375,3 +375,110 @@ newline		clr	,x
 
 
 
+*******************************************************************
+* g4hex - read four hex bytes
+*
+* on entry: nothing
+*
+*  trashes: nothing
+*
+*  returns: D - decoded word value
+*  	    CC.C - set if error detected
+*
+
+g4hex		bsr	g2hex
+		bcs	g4hBad
+
+		tfr	a,b
+		bsr	g2hex
+		bcs	g4hBad
+
+		exg	a,b
+		bra	g4hDone
+
+g4hBad		orcc	#$01		; Set the carry bit
+		bra	g4hRet
+
+g4hDone		andcc	#$fe		; Clear the carry bit
+
+g4hRet		puls 	pc
+
+
+	
+*******************************************************************
+* g2hex - read two hex bytes
+*
+* on entry: nothing
+*
+*  trashes: nothing
+*
+*  returns: A - decoded byte value
+*  	    CC.C - set if error detected
+*
+
+g2hex		pshs	b
+
+		bsr	g1hex
+		bcs	g2hBad
+		tfr	a,b
+
+		bsr	g1hex
+		bcs	g2hBad
+		lsrb
+		lsrb
+		lsrb
+		lsrb
+		pshs	b
+		ora	,s
+		puls	b
+
+		bra	g2hDone
+
+g2hBad		orcc	#$01		; Set carry bit
+		bra	g2hRet
+
+g2hDone		andcc	#$fe		; Clear carry bit
+
+g2hRet		puls 	b,pc
+
+
+	
+*******************************************************************
+* g1hex - read a hex byte
+*
+* on entry: nothing
+*
+*  trashes: nothing
+*
+*  returns: A - decoded byte value
+*  	    CC.C - set if error detected
+*
+
+g1hex		bsr	gChar
+		cmpa	#'0'
+		blt	g1hBadChar
+		cmpa	#'9'
+		blt	g1hNum
+* Not a number - is it A-F or a-f
+      	       	anda    #$df		; Convert to upper case
+		cmpa	#'A'
+		blt	g1hBadChar
+		cmpa	#'F'
+		bgt	g1hBadChar
+
+* It's in the range A-F
+       	      	suba	#('A'-10)
+		bra	g1hDone
+
+* Its a number
+g1hNum		suba	#'0'
+		bra	g1hDone
+
+g1hBadChar	orcc	#$01		; Set carry bit
+		bra	g1hRet
+
+g1hDone		andcc	#$fe		; Clear carry bit
+
+g1hRet		puls 	pc
+
+	
