@@ -424,10 +424,11 @@ g2hex		pshs	b
 
 		bsr	g1hex
 		bcs	g2hBad
-		lsrb
-		lsrb
-		lsrb
-		lsrb
+
+		lslb
+		lslb
+		lslb
+		lslb
 		pshs	b
 		ora	,s
 		puls	b
@@ -460,14 +461,15 @@ g1hex		bsr	gChar
 		cmpa	#'9'
 		blt	g1hNum
 * Not a number - is it A-F or a-f
-      	       	anda    #$df		; Convert to upper case
+      	       	;anda    #$df		; Convert to upper case
 		cmpa	#'A'
 		blt	g1hBadChar
 		cmpa	#'F'
 		bgt	g1hBadChar
 
 * It's in the range A-F
-       	      	suba	#('A'-10)
+       	      	suba	#'A'
+		adda	#10
 		bra	g1hDone
 
 * Its a number
