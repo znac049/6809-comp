@@ -236,7 +236,9 @@ srOne
 
 * prepare to read the data bytes		
 		ldy	srAddr
-		ldx	srCount
+		ldb	srCount
+		clra
+		tfr	d,x
 
 		lda	#'D'
 		bsr	pChar
