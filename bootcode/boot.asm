@@ -108,6 +108,8 @@ quickMemCheck   ldd     #ROMBase
 	       	ldd   	Start
 InROM
 		std	ramEnd	; Do not test beyond this point
+
+		DBGL	'R'
 	
 		ldx	#0	; Address to start testing from
 
@@ -123,6 +125,7 @@ doQuickByte
 	
 * Display the address being tested
 		tfr	x,d	
+
 		sta	$ff71
 		stb	$ff73
 		
@@ -145,9 +148,8 @@ doQuickByte
 		bne	doQuickEnd
 
 		puls	b	; restore old value
-		stb	,x
+		stb	,x+
 	
-		leax	1,x	; on to the next...
 		cmpx	ramEnd
 		bne	doQuickByte
 

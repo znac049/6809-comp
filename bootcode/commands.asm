@@ -4,50 +4,6 @@
 ; Copyright(c) 2016, Bob Green
 ;
 
-DBGS		macro
-		pshs	a
-
-		lda	#' '
-		bsr	pChar
-
-		lda	#\1
-		bsr	pChar
-
-		lda	#'='
-		bsr	pChar
-
-		lda	,s
-		bsr	p2hex
-		
-		lda	#' '
-		bsr	pChar
-
-		puls	a
-		endm
-
-
-DBGL		macro
-		pshs	d
-
-		lda	#' '
-		bsr	pChar
-
-		lda	#\1
-		bsr	pChar
-
-		lda	#'='
-		bsr	pChar
-
-		ldd	,s
-		bsr	p4hex
-		
-		lda	#' '
-		bsr	pChar
-
-		puls	d
-		endm
-
-
 *******************************************************************
 * findCmd - look up command in command table
 *
@@ -227,8 +183,6 @@ srOne
 
 		DBGL	'A'
 
-		bsr	p4hex
-
 		adda	srXSum
 		sta	srXSum
 		addb	srXSum
@@ -238,6 +192,7 @@ srOne
 		ldy	srAddr
 		ldb	srCount
 		clra
+		subd	#3		; count included address and xsum
 		tfr	d,x
 
 		lda	#'D'

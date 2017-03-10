@@ -1,3 +1,47 @@
+DBGS		macro
+		pshs	a
+
+		lda	#' '
+		bsr	pChar
+
+		lda	#\1
+		bsr	pChar
+
+		lda	#'='
+		bsr	pChar
+
+		lda	,s
+		bsr	p2hex
+		
+		lda	#' '
+		bsr	pChar
+
+		puls	a
+		endm
+
+
+DBGL		macro
+		pshs	d
+
+		lda	#' '
+		bsr	pChar
+
+		lda	#\1
+		bsr	pChar
+
+		lda	#'='
+		bsr	pChar
+
+		ldd	,s
+		bsr	p4hex
+		
+		lda	#' '
+		bsr	pChar
+
+		puls	d
+		endm
+
+
 RAMBase		equ	$0000
 ROMBase		equ	$E000
 ROMSize		equ 	8192
