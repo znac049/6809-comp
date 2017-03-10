@@ -247,10 +247,11 @@ srNotSupported	leax	srRecNotSupported,pcr
 		adda	#'0'
 		bsr	pChar
 		bsr	pNL
+		bra	srDone2
 
 srBadChar	leax	srBadFormatMsg,pcr
 		bsr	pStr
-		bsr	srSkip
+srDone2		bsr	srSkip
 
 srDone
 		rts
@@ -258,11 +259,10 @@ srDone
 * Skip the rest of the record
 srSkip		bsr	gChar
 		cmpa	#CR
-		beq	srDone
+		beq	srsDone
 		cmpa	#LF
-		beq	srDone
-		bra	srSkip
-		rts
+		bne	srSkip
+srsDone		rts
 
 
 
