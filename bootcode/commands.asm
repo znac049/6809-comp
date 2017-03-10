@@ -154,10 +154,15 @@ srNext		bsr	gChar
 		sta	srType
 
 * Next two bytes are count
+       	   	lda     #'C'
+		bsr	pChar
+
        	        bsr     g2hex
 		bcs	srBadChar
 		sta	srCount
 		sta	srXSum		; Initialise checksum
+
+		bsr	p2hex
 
 * What comes next is record type specific
 
@@ -175,9 +180,14 @@ srNext		bsr	gChar
 
 
 * S1 record - next 4 bytes are the load address
-srOne		bsr	g4hex
+srOne		
+		lda	#'A'
+		bsr	pChar
+
+		bsr	g4hex
 		bcs	srBadChar
 		std	srAddr
+		bsr	p4hex
 
 		adda	srXSum
 		sta	srXSum
@@ -188,10 +198,15 @@ srOne		bsr	g4hex
 		ldy	srAddr
 		ldx	srCount
 
+		lda	#'D'
+		bsr	pChar
+
 * Read loop starts here
 sr1Next
 		bsr	g2hex
 		bcs	srBadChar
+
+		bsr	pChar
 
 		tfr	a,b
 		addb	srXSum
@@ -207,6 +222,9 @@ sr1Next
 
 sr1DataDone
 * Next byte will be the checksum
+       	    	lda     #'X'
+		bsr	pChar
+
        	    	bsr     g2hex
 		bcs	srBadChar
 		tfr	a,b
