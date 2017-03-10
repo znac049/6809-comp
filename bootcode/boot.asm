@@ -159,6 +159,7 @@ doQuickEnd
 
 * Pull in all the other good stuff(tm)
 
+       	      	include "lib.asm"
 		include	"conio.asm"
 		include "dkio.asm"
 		include "sdio.asm"
