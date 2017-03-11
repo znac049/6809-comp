@@ -195,15 +195,10 @@ srOne
 		subd	#3		; count included address and xsum
 		tfr	d,x
 
-		lda	#'D'
-		bsr	pChar
-
 * Read loop starts here
 sr1Next
 		bsr	g2hex
 		bcs	srBadChar
-
-		bsr	p2hex
 
 		tfr	a,b
 		addb	srXSum
@@ -226,6 +221,7 @@ sr1DataDone
 		DBGS	'X'
 
 		lda	srXSum
+		coma
 
 		DBGS	'x'
 		bsr	pNL
