@@ -11,6 +11,6 @@ foreach ($lines as $line) {
 
   if (substr($l,0,2) == 'S1') {
     echo $l . "\r";
-    usleep(50000);
+    usleep(75000);
   }
 }
