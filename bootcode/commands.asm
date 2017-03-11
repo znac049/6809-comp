@@ -176,6 +176,9 @@ srNext		bsr	gChar
 * S9 record - sets start address and terminates
 * next 4 bytes are the start address
 srNine
+		bsr	pNL
+		bsr	pNL
+
 		bsr	g4hex
 		bcs	srBadChar
 		std	srAddr
