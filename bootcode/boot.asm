@@ -13,21 +13,12 @@ BOOTROM		= 0
 
 
 		include "const.asm"
- IFNE BOOTROM
-		org	$0
- ELSE
-		org	$400
- ENDC
-
+		org	RAMBase
 
 
 		include "vars.asm"
 
- IFNE BOOTROM
-		org	$e000
- ELSE
-		org	$c000
- ENDC
+		org	PROGBase
 
 
 *************************************************************
@@ -66,11 +57,14 @@ RESET
 		leax	CommandMsg,pcr
 		bsr	pStr
 
-cmdLoop		lda	#'.'
+cmdLoop		lda	#'>'
 		bsr	pChar
 		ldx	#line
 		lda	#MAXLINE
 		bsr	getLine
+
+		tsta
+		beq	cmdLoop
 
 		leax	cmdTable,pcr
 		bsr	findCmd
@@ -102,15 +96,7 @@ unknownCmd	fcn	"Unknown command.\r\n"
 * Non-destructive memory check. Doesn't do the full works, just
 * tests for simple write-read. If this monitor is running in RAM,
 * make sure we don't overwrite!
-quickMemCheck   ldd     #ROMBase
-	       	cmpd  	Start
-	       	bge   	InROM
-	       	ldd   	Start
-InROM
-		std	ramEnd	; Do not test beyond this point
-
-		DBGL	'R'
-	
+quickMemCheck
 		ldx	#0	; Address to start testing from
 
 		orcc	#$ff	; no interrupts while we test, in case
@@ -150,7 +136,7 @@ doQuickByte
 		puls	b	; restore old value
 		stb	,x+
 	
-		cmpx	ramEnd
+		cmpx	#PROGBase
 		bne	doQuickByte
 
 doQuickEnd

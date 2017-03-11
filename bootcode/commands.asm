@@ -158,8 +158,6 @@ srNext		bsr	gChar
 		sta	srCount
 		sta	srXSum		; Initialise checksum
 
-       	   	DBGS    'C'
-
 * What comes next is record type specific
 
 * ...Some records, we silently ignore
@@ -169,11 +167,51 @@ srNext		bsr	gChar
 		cmpa	#'5'
 		beq	srIgnore
 		cmpa	#'9'
-		beq	srIgnore
+		beq	srNine
 		cmpa	#'1'
 		beq	srOne
 		bra	srNotSupported
 
+
+* S9 record - sets start address and terminates
+* next 4 bytes are the start address
+srNine
+		bsr	g4hex
+		bcs	srBadChar
+		std	srAddr
+
+		adda	srXSum
+		sta	srXSum
+		addb	srXSum
+		stb	srXSum
+
+* Next byte will be the checksum
+       	    	bsr     g2hex
+		bcs	srBadChar
+		tfr	a,b
+
+		lda	srXSum
+		coma
+		sta	srXSum
+
+		cmpb	srXSum
+		beq	sr9OK
+
+		leax	srBadXSumMsg,pcr
+		bsr	pStr
+		bsr	srSkip
+		bra	srDone
+
+sr9OK		leax	srLoadedMsg,pcr
+		bsr	pStr
+
+		lda	srAddr
+		bsr	p4hex
+
+		bsr	pNL
+
+		bsr	srSkip
+		bra	srDone		; S9 record is always the last one, so quit loading
 
 * S1 record - next 4 bytes are the load address
 srOne		
@@ -181,12 +219,15 @@ srOne
 		bcs	srBadChar
 		std	srAddr
 
-		DBGL	'A'
-
 		adda	srXSum
 		sta	srXSum
 		addb	srXSum
 		stb	srXSum
+
+		ldd	srAddr
+		bsr	p4hex
+		lda	#CR
+		bsr	pChar
 
 * prepare to read the data bytes		
 		ldy	srAddr
@@ -218,14 +259,9 @@ sr1DataDone
 		bcs	srBadChar
 		tfr	a,b
 
-		DBGS	'X'
-
 		lda	srXSum
 		coma
 		sta	srXSum
-
-		DBGS	'x'
-		bsr	pNL
 
 		cmpb	srXSum
 		beq	sr1OK
@@ -282,6 +318,7 @@ srBadFormatMsg	fcn	"\r\nUnexpected character while reading S record.\r\n"
 srRecNotSupported
 		fcn	"\r\nUnsupported S record type: "
 srBadXSumMsg	fcn	"\r\nCalculated checksum does not match transmitted checksum!\r\n"
+srLoadedMsg	fcn	"\r\nLoaded OK. Start address: "
 
 		
 *******************************************************************

@@ -41,9 +41,18 @@ DBGL		macro
 		puls	d
 		endm
 
+ IFNE BOOTROM
 
 RAMBase		equ	$0000
-ROMBase		equ	$E000
+PROGBase	equ	$E000
+
+ ELSE
+
+RAMBase		equ	$0400
+PROGBase	equ	$C000
+
+ ENDC
+
 ROMSize		equ 	8192
 Uart0Base	equ	$FF00
 CFBase		equ	$FF10
