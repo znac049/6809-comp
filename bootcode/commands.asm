@@ -222,6 +222,7 @@ sr1DataDone
 
 		lda	srXSum
 		coma
+		sta	srXSum
 
 		DBGS	'x'
 		bsr	pNL
