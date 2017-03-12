@@ -12,26 +12,26 @@
 
 * ID Block (LSN 0)
 *
-DD		struct
+DD			struct
 	
-totSectors	rmb	3
-trackSize	rmb	1
-mapSize		rmb	2
-clusterSize	rmb	2
-rootLSN		rmb	3
-owner		rmb	2
-attribs		rmb	1
-id		rmb	2
-format		rmb	1
-spt		rmb	2
-unused1		rmb	2
-bootLSN		rmb	3
-bootSize	rmb	2
-created		rmb	5
-volName		rmb	32
-options		rmb	32
-	
-		endstruct
+totSectors		rmb	3
+numTracks		rmb	1
+map			rmb	2
+sectorsPerCluster	rmb	2
+rootLSN			rmb	3
+owner			rmb	2
+attribs			rmb	1
+id			rmb	2
+format			rmb	1
+spt			rmb	2
+unused1			rmb	2
+bootLSN			rmb	3
+bootSize		rmb	2
+created			rmb	5
+volName			rmb	32
+options			rmb	32
+			
+			endstruct
 
 
 * File Descriptor

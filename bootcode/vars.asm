@@ -9,12 +9,13 @@ cmdFunc		rmb	2
 
 line		rmb	MAXLINE
 	
-secBuff		rmb	SECSIZE*2
+secBuff		rmb	512
 
 ramEnd		rmb    	2
 
 
-lsn.p		rmb	4	; The CF sector number
+lsn.p		rmb	4	; The os9 sector number
+lba.p		rmb	4	; SD card block number
 
 rootLSN.p	rmb	4	; The start of the root directory
 bootLSN.p	rmb	4	; The fisrt LSN of the boot file

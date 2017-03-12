@@ -105,20 +105,84 @@ cmdTable	fdb	bootCmd
 bootCmd		leax	bootMsg,pcr
 		bsr	pStr
 
-		ldx	#CFBase
-		bsr	cfWait
-		lda	#CMD.IDENTIFY
-		sta	CF.Command,x
-		tfr	x,y
 		ldx	#secBuff
-		bsr	cfReadBuff
-		
-		rts
+		ldy	#lsn.p
+		clra
+		clrb
+		std	,y	; Set LSN=0
+		std	2,y	;
+		bsr	dkReadLSN
+		bcs	badRead
+
+		tfr	x,u	; u = LSN buffer
+
+		leax	boot1Msg,pcr
+		bsr	pStr
+
+* Copy the root LSN
+		ldy	#rootLSN.p
+		leax	DD.rootLSN,u
+		clra
+		ldb	,x
+		std	,y
+		ldd	1,x
+		std	2,y
+
+* Copy the boot LSN
+		ldy	#bootLSN.p
+		leax	DD.bootLSN,u
+		clra
+		ldb	,x
+		std	,y
+		ldd	1,x
+		std	2,y
+
+* Grab the boot size
+       	   	ldd	bootSize,u
+		std	bootSize
+
+* If boot size is zero, can't boot
+     	        cmpd	#0
+	       	beq	nonBoot
+
+* Looking good. Read LSNs sequentially until 
+* 'bootSize' bytes have been read. Load into
+* memory at $2800.
+		ldu	#$2800
+bootLoop
+		ldx	#secBuff
+		ldy	#bootLSN.p
+		bsr	dkReadLSN
+		bsr	dkIncLSN
+
+		ldd	bootSize
+		subd	#256
+		cmpd	#0
+		bgt	bootLoop
+
+		leax	bootLoadedMsg,pcr
+		bsr	pStr
+		bra	bootDone
+
+
+nonBoot		leax	nonBootMsg,pcr
+		bsr	pStr
+		bra	bootDone
+
+
+badRead		leax	badBootMsg,pcr
+		bsr	pStr
+
+
+bootDone	rts
 
 	
 	
-bootMsg		fcn	"BOOT command not implemented yet!\r\n"
-
+bootMsg		fcn	"Attempting to boot from CF/SD\r\n"
+boot1Msg	fcn	"LSN0 read ok.\r\nBoot LSN:"
+nonBootMsg	fcn	"Non bootable disk (bootSize=0)\r\n"
+badBootMsg	fcn	"Couldn't read LSN0.\r\n"
+bootLoadedMsg	fcn	"Boot code loaded into memory at $2800\r\n"
 
 		
 *******************************************************************

@@ -1,6 +1,9 @@
-;--------------------------------------------------------------------------------
-
-
+;
+; Simple 6809 Monitor
+;
+; Copyright(c) 2016, Bob Green
+;
+	
 
 ;--------------------------------------------------------------------------------
 ; sdRdBlock - read block from the SD card
@@ -129,3 +132,21 @@ setLBA		pshs    y,a
             
 		puls    y,a,pc			; restore...and return
 
+
+
+;--------------------------------------------------------------------------------
+; LSN2LBA - convert LSN to LBA
+;
+; on entry:
+;	X - byte *LSN
+;	Y - byte *LBA
+;
+; trashes: nothing
+;
+; returns: nothing
+;
+LSN2LBA		pshs	a
+		
+		codeme		
+		
+		puls	a,pc
