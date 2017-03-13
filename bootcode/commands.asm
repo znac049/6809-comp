@@ -128,6 +128,12 @@ bootCmd		leax	bootMsg,pcr
 		ldd	1,x
 		std	2,y
 
+		leax	rootLSNMsg,pcr
+		bsr	pStr
+		ldx	#rootLSN.p
+		bsr	pQuad.p
+		bsr	pNL
+
 * Copy the boot LSN
 		ldy	#bootLSN.p
 		leax	DD.bootLSN,u
@@ -137,9 +143,20 @@ bootCmd		leax	bootMsg,pcr
 		ldd	1,x
 		std	2,y
 
+		leax	bootLSNMsg,pcr
+		bsr	pStr
+		ldx	#bootLSN.p
+		bsr	pQuad.p
+		bsr	pNL
+
 * Grab the boot size
        	   	ldd	bootSize,u
 		std	bootSize
+
+		leax	bootSizeMsg,pcr
+		bsr	pStr
+		bsr	p4hex
+		bsr	pNL
 
 * If boot size is zero, can't boot
      	        cmpd	#0
@@ -182,6 +199,9 @@ bootMsg		fcn	"Attempting to boot from CF/SD\r\n"
 boot1Msg	fcn	"LSN0 read ok.\r\nBoot LSN:"
 nonBootMsg	fcn	"Non bootable disk (bootSize=0)\r\n"
 badBootMsg	fcn	"Couldn't read LSN0.\r\n"
+rootLSNMsg	fcn	"Root LSN: "
+bootLSNMsg	fcn	"Boot LSN: "
+bootSizeMsg	fcn	"Boot size: "
 bootLoadedMsg	fcn	"Boot code loaded into memory at $2800\r\n"
 
 		

@@ -180,27 +180,6 @@ pnpStrEnd 	puls	a,pc
 	
 
 *******************************************************************
-* pLBA - print a LBA as hex
-*
-* on entry: X - Pointer to LBA
-*
-*  trashes: nothing
-*
-*  returns: nothing
-*
-
-pLBA		pshs	d
-
-		ldd     2,x
-		bsr	p4hex			; print upper word
-		ldd     ,x
-		bsr	p4hex			; print lower word
-
-		puls	d,pc
-
-
-	
-*******************************************************************
 ;--------------------------------------------------------------------------------
 ; p4hex - print a word as hex
 ;

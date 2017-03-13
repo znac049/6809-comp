@@ -146,7 +146,21 @@ setLBA		pshs    y,a
 ; returns: nothing
 ;
 LSN2LBA		pshs	a
-		
-		codeme		
-		
+
+		lda	,x
+		lsra
+		sta	,y
+
+		lda	1,x
+		rora
+		sta	1,y
+
+		lda	2,x
+		rora
+		sta	2,y
+
+		lda	3,x
+		rora
+		sta	3,y		
+
 		puls	a,pc
