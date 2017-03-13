@@ -230,6 +230,9 @@ srNext		bsr	gChar
 
 * Nrxt byte is record type
        	        bsr     gChar
+
+		DBGS	'C'
+		
 		cmpa    #'0'
 		blt     srBadChar
 		cmpa    #'9'
@@ -267,6 +270,8 @@ srNine
 		bcs	srBadChar
 		std	srAddr
 
+		DBGL	'A'
+
 		adda	srXSum
 		sta	srXSum
 		addb	srXSum
@@ -276,6 +281,8 @@ srNine
        	    	bsr     g2hex
 		bcs	srBadChar
 		tfr	a,b
+
+		DBGS	'X'
 
 		lda	srXSum
 		coma
@@ -292,7 +299,7 @@ srNine
 sr9OK		leax	srLoadedMsg,pcr
 		bsr	pStr
 
-		lda	srAddr
+		ldd	srAddr
 		bsr	p4hex
 
 		bsr	pNL
