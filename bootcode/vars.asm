@@ -8,9 +8,9 @@ temp		rmb	1
 cmdFunc		rmb	2
 
 line		rmb	MAXLINE
+arg.p		rmb	2	; pointer into command line after the
+				; command has been extracted
 	
-secBuff		rmb	512
-
 ramEnd		rmb    	2
 
 
@@ -28,3 +28,5 @@ srAddr		rmb	2	; The address to load the next data byte into
 srXSum		rmb	1	; The calculated checksum
 
 * Virtual disk subsystem
+secBuff		rmb	512
+

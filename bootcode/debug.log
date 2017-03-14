@@ -1071,3 +1071,399 @@ Read STATUS Reg: 0x58
 Read DATA Reg: 0x00
 Read STATUS Reg: 0x58
 Read DATA Reg: 0x00
+6x09 emulator starting up.
+Biggest LSN is 5000
+Trying with 16 heads (target_rem=0)
+5000 / 16 is 312 rem 8
+Trying with 15 heads (target_rem=0)
+5000 / 15 is 333 rem 5
+Trying with 14 heads (target_rem=0)
+5000 / 14 is 357 rem 2
+Trying with 13 heads (target_rem=0)
+5000 / 13 is 384 rem 8
+Trying with 12 heads (target_rem=0)
+5000 / 12 is 416 rem 8
+Trying with 11 heads (target_rem=0)
+5000 / 11 is 454 rem 6
+Trying with 10 heads (target_rem=0)
+5000 / 10 is 500 rem 0
+heads=10 is a candidate: rem=0
+Perfect CHS=2:10:250 found
+6x09 emulator starting up.
+Biggest LSN is 5000
+Trying with 16 heads (target_rem=0)
+5000 / 16 is 312 rem 8
+Trying with 15 heads (target_rem=0)
+5000 / 15 is 333 rem 5
+Trying with 14 heads (target_rem=0)
+5000 / 14 is 357 rem 2
+Trying with 13 heads (target_rem=0)
+5000 / 13 is 384 rem 8
+Trying with 12 heads (target_rem=0)
+5000 / 12 is 416 rem 8
+Trying with 11 heads (target_rem=0)
+5000 / 11 is 454 rem 6
+Trying with 10 heads (target_rem=0)
+5000 / 10 is 500 rem 0
+heads=10 is a candidate: rem=0
+Perfect CHS=2:10:250 found
+6x09 emulator starting up.
+Biggest LSN is 5000
+Trying with 16 heads (target_rem=0)
+5000 / 16 is 312 rem 8
+Trying with 15 heads (target_rem=0)
+5000 / 15 is 333 rem 5
+Trying with 14 heads (target_rem=0)
+5000 / 14 is 357 rem 2
+Trying with 13 heads (target_rem=0)
+5000 / 13 is 384 rem 8
+Trying with 12 heads (target_rem=0)
+5000 / 12 is 416 rem 8
+Trying with 11 heads (target_rem=0)
+5000 / 11 is 454 rem 6
+Trying with 10 heads (target_rem=0)
+5000 / 10 is 500 rem 0
+heads=10 is a candidate: rem=0
+Perfect CHS=2:10:250 found
+6x09 emulator starting up.
+Biggest LSN is 5000
+Trying with 16 heads (target_rem=0)
+5000 / 16 is 312 rem 8
+Trying with 15 heads (target_rem=0)
+5000 / 15 is 333 rem 5
+Trying with 14 heads (target_rem=0)
+5000 / 14 is 357 rem 2
+Trying with 13 heads (target_rem=0)
+5000 / 13 is 384 rem 8
+Trying with 12 heads (target_rem=0)
+5000 / 12 is 416 rem 8
+Trying with 11 heads (target_rem=0)
+5000 / 11 is 454 rem 6
+Trying with 10 heads (target_rem=0)
+5000 / 10 is 500 rem 0
+heads=10 is a candidate: rem=0
+Perfect CHS=2:10:250 found
+6x09 emulator starting up.
+Biggest LSN is 5000
+Trying with 16 heads (target_rem=0)
+5000 / 16 is 312 rem 8
+Trying with 15 heads (target_rem=0)
+5000 / 15 is 333 rem 5
+Trying with 14 heads (target_rem=0)
+5000 / 14 is 357 rem 2
+Trying with 13 heads (target_rem=0)
+5000 / 13 is 384 rem 8
+Trying with 12 heads (target_rem=0)
+5000 / 12 is 416 rem 8
+Trying with 11 heads (target_rem=0)
+5000 / 11 is 454 rem 6
+Trying with 10 heads (target_rem=0)
+5000 / 10 is 500 rem 0
+heads=10 is a candidate: rem=0
+Perfect CHS=2:10:250 found
+6x09 emulator starting up.
+Biggest LSN is 5000
+Trying with 16 heads (target_rem=0)
+5000 / 16 is 312 rem 8
+Trying with 15 heads (target_rem=0)
+5000 / 15 is 333 rem 5
+Trying with 14 heads (target_rem=0)
+5000 / 14 is 357 rem 2
+Trying with 13 heads (target_rem=0)
+5000 / 13 is 384 rem 8
+Trying with 12 heads (target_rem=0)
+5000 / 12 is 416 rem 8
+Trying with 11 heads (target_rem=0)
+5000 / 11 is 454 rem 6
+Trying with 10 heads (target_rem=0)
+5000 / 10 is 500 rem 0
+heads=10 is a candidate: rem=0
+Perfect CHS=2:10:250 found
+6x09 emulator starting up.
+Biggest LSN is 5000
+Trying with 16 heads (target_rem=0)
+5000 / 16 is 312 rem 8
+Trying with 15 heads (target_rem=0)
+5000 / 15 is 333 rem 5
+Trying with 14 heads (target_rem=0)
+5000 / 14 is 357 rem 2
+Trying with 13 heads (target_rem=0)
+5000 / 13 is 384 rem 8
+Trying with 12 heads (target_rem=0)
+5000 / 12 is 416 rem 8
+Trying with 11 heads (target_rem=0)
+5000 / 11 is 454 rem 6
+Trying with 10 heads (target_rem=0)
+5000 / 10 is 500 rem 0
+heads=10 is a candidate: rem=0
+Perfect CHS=2:10:250 found
+6x09 emulator starting up.
+Biggest LSN is 5000
+Trying with 16 heads (target_rem=0)
+5000 / 16 is 312 rem 8
+Trying with 15 heads (target_rem=0)
+5000 / 15 is 333 rem 5
+Trying with 14 heads (target_rem=0)
+5000 / 14 is 357 rem 2
+Trying with 13 heads (target_rem=0)
+5000 / 13 is 384 rem 8
+Trying with 12 heads (target_rem=0)
+5000 / 12 is 416 rem 8
+Trying with 11 heads (target_rem=0)
+5000 / 11 is 454 rem 6
+Trying with 10 heads (target_rem=0)
+5000 / 10 is 500 rem 0
+heads=10 is a candidate: rem=0
+Perfect CHS=2:10:250 found
+6x09 emulator starting up.
+Biggest LSN is 5000
+Trying with 16 heads (target_rem=0)
+5000 / 16 is 312 rem 8
+Trying with 15 heads (target_rem=0)
+5000 / 15 is 333 rem 5
+Trying with 14 heads (target_rem=0)
+5000 / 14 is 357 rem 2
+Trying with 13 heads (target_rem=0)
+5000 / 13 is 384 rem 8
+Trying with 12 heads (target_rem=0)
+5000 / 12 is 416 rem 8
+Trying with 11 heads (target_rem=0)
+5000 / 11 is 454 rem 6
+Trying with 10 heads (target_rem=0)
+5000 / 10 is 500 rem 0
+heads=10 is a candidate: rem=0
+Perfect CHS=2:10:250 found
+6x09 emulator starting up.
+Biggest LSN is 5000
+Trying with 16 heads (target_rem=0)
+5000 / 16 is 312 rem 8
+Trying with 15 heads (target_rem=0)
+5000 / 15 is 333 rem 5
+Trying with 14 heads (target_rem=0)
+5000 / 14 is 357 rem 2
+Trying with 13 heads (target_rem=0)
+5000 / 13 is 384 rem 8
+Trying with 12 heads (target_rem=0)
+5000 / 12 is 416 rem 8
+Trying with 11 heads (target_rem=0)
+5000 / 11 is 454 rem 6
+Trying with 10 heads (target_rem=0)
+5000 / 10 is 500 rem 0
+heads=10 is a candidate: rem=0
+Perfect CHS=2:10:250 found
+6x09 emulator starting up.
+Biggest LSN is 5000
+Trying with 16 heads (target_rem=0)
+5000 / 16 is 312 rem 8
+Trying with 15 heads (target_rem=0)
+5000 / 15 is 333 rem 5
+Trying with 14 heads (target_rem=0)
+5000 / 14 is 357 rem 2
+Trying with 13 heads (target_rem=0)
+5000 / 13 is 384 rem 8
+Trying with 12 heads (target_rem=0)
+5000 / 12 is 416 rem 8
+Trying with 11 heads (target_rem=0)
+5000 / 11 is 454 rem 6
+Trying with 10 heads (target_rem=0)
+5000 / 10 is 500 rem 0
+heads=10 is a candidate: rem=0
+Perfect CHS=2:10:250 found
+6x09 emulator starting up.
+Biggest LSN is 5000
+Trying with 16 heads (target_rem=0)
+5000 / 16 is 312 rem 8
+Trying with 15 heads (target_rem=0)
+5000 / 15 is 333 rem 5
+Trying with 14 heads (target_rem=0)
+5000 / 14 is 357 rem 2
+Trying with 13 heads (target_rem=0)
+5000 / 13 is 384 rem 8
+Trying with 12 heads (target_rem=0)
+5000 / 12 is 416 rem 8
+Trying with 11 heads (target_rem=0)
+5000 / 11 is 454 rem 6
+Trying with 10 heads (target_rem=0)
+5000 / 10 is 500 rem 0
+heads=10 is a candidate: rem=0
+Perfect CHS=2:10:250 found
+6x09 emulator starting up.
+Biggest LSN is 5000
+Trying with 16 heads (target_rem=0)
+5000 / 16 is 312 rem 8
+Trying with 15 heads (target_rem=0)
+5000 / 15 is 333 rem 5
+Trying with 14 heads (target_rem=0)
+5000 / 14 is 357 rem 2
+Trying with 13 heads (target_rem=0)
+5000 / 13 is 384 rem 8
+Trying with 12 heads (target_rem=0)
+5000 / 12 is 416 rem 8
+Trying with 11 heads (target_rem=0)
+5000 / 11 is 454 rem 6
+Trying with 10 heads (target_rem=0)
+5000 / 10 is 500 rem 0
+heads=10 is a candidate: rem=0
+Perfect CHS=2:10:250 found
+6x09 emulator starting up.
+Biggest LSN is 5000
+Trying with 16 heads (target_rem=0)
+5000 / 16 is 312 rem 8
+Trying with 15 heads (target_rem=0)
+5000 / 15 is 333 rem 5
+Trying with 14 heads (target_rem=0)
+5000 / 14 is 357 rem 2
+Trying with 13 heads (target_rem=0)
+5000 / 13 is 384 rem 8
+Trying with 12 heads (target_rem=0)
+5000 / 12 is 416 rem 8
+Trying with 11 heads (target_rem=0)
+5000 / 11 is 454 rem 6
+Trying with 10 heads (target_rem=0)
+5000 / 10 is 500 rem 0
+heads=10 is a candidate: rem=0
+Perfect CHS=2:10:250 found
+6x09 emulator starting up.
+Biggest LSN is 5000
+Trying with 16 heads (target_rem=0)
+5000 / 16 is 312 rem 8
+Trying with 15 heads (target_rem=0)
+5000 / 15 is 333 rem 5
+Trying with 14 heads (target_rem=0)
+5000 / 14 is 357 rem 2
+Trying with 13 heads (target_rem=0)
+5000 / 13 is 384 rem 8
+Trying with 12 heads (target_rem=0)
+5000 / 12 is 416 rem 8
+Trying with 11 heads (target_rem=0)
+5000 / 11 is 454 rem 6
+Trying with 10 heads (target_rem=0)
+5000 / 10 is 500 rem 0
+heads=10 is a candidate: rem=0
+Perfect CHS=2:10:250 found
+6x09 emulator starting up.
+Biggest LSN is 5000
+Trying with 16 heads (target_rem=0)
+5000 / 16 is 312 rem 8
+Trying with 15 heads (target_rem=0)
+5000 / 15 is 333 rem 5
+Trying with 14 heads (target_rem=0)
+5000 / 14 is 357 rem 2
+Trying with 13 heads (target_rem=0)
+5000 / 13 is 384 rem 8
+Trying with 12 heads (target_rem=0)
+5000 / 12 is 416 rem 8
+Trying with 11 heads (target_rem=0)
+5000 / 11 is 454 rem 6
+Trying with 10 heads (target_rem=0)
+5000 / 10 is 500 rem 0
+heads=10 is a candidate: rem=0
+Perfect CHS=2:10:250 found
+6x09 emulator starting up.
+Biggest LSN is 5000
+Trying with 16 heads (target_rem=0)
+5000 / 16 is 312 rem 8
+Trying with 15 heads (target_rem=0)
+5000 / 15 is 333 rem 5
+Trying with 14 heads (target_rem=0)
+5000 / 14 is 357 rem 2
+Trying with 13 heads (target_rem=0)
+5000 / 13 is 384 rem 8
+Trying with 12 heads (target_rem=0)
+5000 / 12 is 416 rem 8
+Trying with 11 heads (target_rem=0)
+5000 / 11 is 454 rem 6
+Trying with 10 heads (target_rem=0)
+5000 / 10 is 500 rem 0
+heads=10 is a candidate: rem=0
+Perfect CHS=2:10:250 found
+6x09 emulator starting up.
+Biggest LSN is 5000
+Trying with 16 heads (target_rem=0)
+5000 / 16 is 312 rem 8
+Trying with 15 heads (target_rem=0)
+5000 / 15 is 333 rem 5
+Trying with 14 heads (target_rem=0)
+5000 / 14 is 357 rem 2
+Trying with 13 heads (target_rem=0)
+5000 / 13 is 384 rem 8
+Trying with 12 heads (target_rem=0)
+5000 / 12 is 416 rem 8
+Trying with 11 heads (target_rem=0)
+5000 / 11 is 454 rem 6
+Trying with 10 heads (target_rem=0)
+5000 / 10 is 500 rem 0
+heads=10 is a candidate: rem=0
+Perfect CHS=2:10:250 found
+6x09 emulator starting up.
+Biggest LSN is 5000
+Trying with 16 heads (target_rem=0)
+5000 / 16 is 312 rem 8
+Trying with 15 heads (target_rem=0)
+5000 / 15 is 333 rem 5
+Trying with 14 heads (target_rem=0)
+5000 / 14 is 357 rem 2
+Trying with 13 heads (target_rem=0)
+5000 / 13 is 384 rem 8
+Trying with 12 heads (target_rem=0)
+5000 / 12 is 416 rem 8
+Trying with 11 heads (target_rem=0)
+5000 / 11 is 454 rem 6
+Trying with 10 heads (target_rem=0)
+5000 / 10 is 500 rem 0
+heads=10 is a candidate: rem=0
+Perfect CHS=2:10:250 found
+6x09 emulator starting up.
+Biggest LSN is 5000
+Trying with 16 heads (target_rem=0)
+5000 / 16 is 312 rem 8
+Trying with 15 heads (target_rem=0)
+5000 / 15 is 333 rem 5
+Trying with 14 heads (target_rem=0)
+5000 / 14 is 357 rem 2
+Trying with 13 heads (target_rem=0)
+5000 / 13 is 384 rem 8
+Trying with 12 heads (target_rem=0)
+5000 / 12 is 416 rem 8
+Trying with 11 heads (target_rem=0)
+5000 / 11 is 454 rem 6
+Trying with 10 heads (target_rem=0)
+5000 / 10 is 500 rem 0
+heads=10 is a candidate: rem=0
+Perfect CHS=2:10:250 found
+6x09 emulator starting up.
+Biggest LSN is 5000
+Trying with 16 heads (target_rem=0)
+5000 / 16 is 312 rem 8
+Trying with 15 heads (target_rem=0)
+5000 / 15 is 333 rem 5
+Trying with 14 heads (target_rem=0)
+5000 / 14 is 357 rem 2
+Trying with 13 heads (target_rem=0)
+5000 / 13 is 384 rem 8
+Trying with 12 heads (target_rem=0)
+5000 / 12 is 416 rem 8
+Trying with 11 heads (target_rem=0)
+5000 / 11 is 454 rem 6
+Trying with 10 heads (target_rem=0)
+5000 / 10 is 500 rem 0
+heads=10 is a candidate: rem=0
+Perfect CHS=2:10:250 found
+6x09 emulator starting up.
+Biggest LSN is 5000
+Trying with 16 heads (target_rem=0)
+5000 / 16 is 312 rem 8
+Trying with 15 heads (target_rem=0)
+5000 / 15 is 333 rem 5
+Trying with 14 heads (target_rem=0)
+5000 / 14 is 357 rem 2
+Trying with 13 heads (target_rem=0)
+5000 / 13 is 384 rem 8
+Trying with 12 heads (target_rem=0)
+5000 / 12 is 416 rem 8
+Trying with 11 heads (target_rem=0)
+5000 / 11 is 454 rem 6
+Trying with 10 heads (target_rem=0)
+5000 / 10 is 500 rem 0
+heads=10 is a candidate: rem=0
+Perfect CHS=2:10:250 found

@@ -9,7 +9,7 @@
 		pragma	6809	; Just while we are testing with 6809 hardware
 
 * Set to 1 if this is being assembled as a boot rom
-BOOTROM		= 0
+BOOTROM		= 1
 
 
 		include "const.asm"
@@ -57,8 +57,9 @@ RESET
 		leax	CommandMsg,pcr
 		bsr	pStr
 
-cmdLoop		lda	#'>'
-		bsr	pChar
+cmdLoop		leax	prompt,pcr
+		bsr	pStr
+
 		ldx	#line
 		lda	#MAXLINE
 		bsr	getLine
@@ -91,6 +92,7 @@ MemoryMsg	fcn	"Memory size: "
 CommandMsg	fcn	"Type 'help' for a list of commands\r\n\n"
 
 unknownCmd	fcn	"Unknown command.\r\n"
+prompt		fcn	">> "
 
 
 * Non-destructive memory check. Doesn't do the full works, just
@@ -148,6 +150,8 @@ doQuickEnd
 * Pull in all the other good stuff(tm)
 
        	      	include "lib.asm"
+		include "strings.asm"
+		include "quad.asm"
 		include	"conio.asm"
 		include "dkio.asm"
 		include "sdio.asm"

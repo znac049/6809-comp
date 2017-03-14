@@ -276,27 +276,6 @@ pNL 		pshs	a
 
 
 *******************************************************************
-* pQuad.p - print a long (32-bit) number by reference
-*
-* on entry: X address of quad
-*
-*  trashes: nothing
-*
-*  returns: nothing
-*
-
-pQuad.p		pshs	d
-
-		ldd	,x
-		bsr	p4hex
-		ldd	2,x
-		bsr	p4hex
-
-		puls	d,pc
-
-
-
-*******************************************************************
 * readLine - read a line from the console, terminated by CR or LF.
 *		BS/DEL are treated as DEL. Control characters are
 *		ignored.
@@ -435,31 +414,8 @@ g2hRet		puls 	b,pc
 *
 
 g1hex		bsr	gChar
-		cmpa	#'0'
-		blt	g1hBadChar
-		cmpa	#'9'
-		ble	g1hNum
-* Not a number - is it A-F or a-f
-      	       	;anda    #$df		; Convert to upper case
-		cmpa	#'A'
-		blt	g1hBadChar
-		cmpa	#'F'
-		bgt	g1hBadChar
+		bsr	hexval
 
-* It's in the range A-F
-       	      	suba	#'A'
-		adda	#10
-		bra	g1hDone
-
-* Its a number
-g1hNum		suba	#'0'
-		bra	g1hDone
-
-g1hBadChar	orcc	#$01		; Set carry bit
-		bra	g1hRet
-
-g1hDone		andcc	#$fe		; Clear carry bit
-
-g1hRet		puls 	pc
+		puls	pc
 
 	
