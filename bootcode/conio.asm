@@ -400,8 +400,6 @@ g2hRet		puls 	b,pc
 *
 * on entry: nothing
 *
-*  trashes: nothing
-*
 *  returns: A - decoded byte value
 *  	    CC.C - set if error detected
 *
@@ -410,5 +408,33 @@ g1hex		bsr	gChar
 		bsr	hexval
 
 		puls	pc
+
+	
+
+
+	
+*******************************************************************
+* pnhex - print n hex bytes
+*
+* on entry: X - address of buffer
+*           A -	padding char
+*	    B - number of bytes to print 
+*
+
+pnhex		pshs	x,b
+		pshs	a
+
+pnhex_next	tstb
+		beq	pnhex_first
+		lda	,s
+		bsr	pChar
+
+pnhex_first	lda	,x+
+		bsr	p2hex
+		subb	#1
+		bne	pnhex_next
+
+		puls	a
+		puls	b,x,pc
 
 	

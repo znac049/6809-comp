@@ -144,9 +144,32 @@ cfinfoUsage	fcn	" - display info about CF disk(s), if present"
 dkbuffCmd	leax	dkbuffMsg,pcr
 		bsr	pStr
 
+		ldy	#0
 		ldx	#secBuff
+
+dkbuff_Next	tfr	x,d
+		bsr	p4hex
+
+		lda	#':'
+		bsr	pChar
+		lda	#' '
+		bsr	pChar
+
 		ldb	#16
+		bsr	pnhex
+
+		lda	#' '
+		bsr	pChar
+		bsr	pChar
+
 		bsr	pnpStr
+
+		bsr	pNL
+
+		leax	16,x
+		leay	16,y
+		cmpy	#512
+		bne	dkbuff_Next
 
 		bsr	pNL
 
@@ -156,7 +179,7 @@ dkbuffCmd	leax	dkbuffMsg,pcr
 dkbuffMsg	fcn	"Contents of disk buffer:\r\n"
 
 
-	
+
 *******************************************************************
 * helpCmd - execute the 'help' command
 *
