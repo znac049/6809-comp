@@ -91,15 +91,8 @@ ppChar		pshs	b,x
 		bitb	#2		; tx register empty?
 		beq	@wait
 
-		cmpa	#' '
-		blt	dot
-		cmpa	#126
-		bgt	dot
-
-		bra	notDot
-
-dot		lda	#'.'
-notDot		sta	DataReg,x	; send the char
+		bsr	printable
+		bsr	pChar
 
 		puls	x,b,pc
 
@@ -159,12 +152,12 @@ pnStrEnd 	puls	a,pc
 * on entry: B - number of bytes
 *	    X - address of string
 *
-*  trashes: B,X
+*  trashes: nothing
 *
 * returns: nothing
 *
 
-pnpStr		pshs	a
+pnpStr		pshs	a,b,x
 
 		tstb
 		beq     pnpStrEnd
@@ -175,7 +168,7 @@ pnpStr		pshs	a
 		beq     pnpStrEnd
 		bra	@next
 
-pnpStrEnd 	puls	a,pc
+pnpStrEnd 	puls	x,b,a,pc
 
 	
 

@@ -35,6 +35,10 @@ cmdTable	fdb	bootCmd
 		fcn	"lba"
 		fdb	0
 
+		fdb	dkbuffCmd
+		fcn	"dkbuff"
+		fdb	0
+
 		fdb	0
 
 
@@ -122,12 +126,6 @@ mcDone		puls	b,y,pc
 *******************************************************************
 * cfInfoCmd - execute the 'cfinfo' command
 *
-* on entry: none
-*
-*  trashes: nothing
-*
-*  returns: nothing
-*
 cfInfoCmd	leax	cfinfoMsg,pcr
 		bsr	pStr
 		bsr	cfInfo
@@ -141,13 +139,28 @@ cfinfoUsage	fcn	" - display info about CF disk(s), if present"
 
 	
 *******************************************************************
+* dkbuffCmd - dump the contents of the disk buffer
+*
+dkbuffCmd	leax	dkbuffMsg,pcr
+		bsr	pStr
+
+		ldx	#secBuff
+		ldb	#16
+		bsr	pnpStr
+
+		bsr	pNL
+
+		rts
+
+	
+dkbuffMsg	fcn	"Contents of disk buffer:\r\n"
+
+
+	
+*******************************************************************
 * helpCmd - execute the 'help' command
 *
 * on entry: none
-*
-*  trashes: nothing
-*
-*  returns: nothing
 *
 helpCmd		leax	helpMsg,pcr
 		bsr	pStr

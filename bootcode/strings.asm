@@ -42,3 +42,17 @@ hexval_Done	andcc	#$fe		; Clear carry bit
 hexval_Ret	puls 	pc
 
 	
+*******************************************************************
+* printable - ensure char can be printed in ascii
+*
+* on entry: A - char to convert
+*
+*  returns: A - converted char
+*
+
+printable	cmpa	#' '
+		blt	printable_not
+		cmpa	#126
+		blt	printable_ok
+printable_not	lda	#'.'
+printable_ok	rts

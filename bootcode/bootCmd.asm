@@ -10,15 +10,16 @@
 bootCmd		leax	bootMsg,pcr
 		bsr	pStr
 
+		ldx	#lsn.p
+		bsr	clearQuad
+		tfr	x,y
+
 		ldx	#secBuff
-		ldy	#lsn.p
-		clra
-		clrb
-		std	,y	; Set LSN=0
-		std	2,y	;
+
 		bsr	dkReadLSN
 		bcs	badRead
 
+ rts
 		tfr	x,u	; u = LSN buffer
 
 		leax	boot1Msg,pcr
