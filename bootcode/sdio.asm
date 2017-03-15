@@ -111,13 +111,13 @@ clearLBA	pshs    a
 setLBA		pshs    x,a
 
 		leax    SDBase,pcr
-		lda     1,y
+		lda     3,y
 		sta     SD.LBA0,x
             
-		lda	,y
+		lda	2,y
 		sta     SD.LBA1,x
             
-		lda     3,y
+		lda     1,y
 		sta     SD.LBA2,x
             
 		lda     #00			; SD card only uses 3 bytes of LBA

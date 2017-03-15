@@ -36,9 +36,18 @@ dkReadLSN	pshs	a,y
 		pshs	x
 
 		tfr	y,x	; X -> LSN
+
 		ldy	#lba.p
 		bsr	LSN2LBA
 
+		ldx	2,s
+		bsr	pQuad
+		lda	#'>'
+		bsr	pChar
+		ldx	#lba.p
+		bsr	pQuad
+		bsr	pNL
+		
 		ldx	,s	
 		ldy	#lba.p
 		bsr	sdRdBlock

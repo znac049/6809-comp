@@ -116,9 +116,20 @@ bootCmd		leax	bootMsg,pcr
 * memory at $2800.
 		ldu	#$2800
 bootLoop
+		lda	#'.'
+		bsr	pChar
+		
 		ldx	#secBuff
 		ldy	#bootLSN.p
 		bsr	dkReadLSN
+
+* copy from buffer to real memory
+       	    	ldy     #256
+bootCopy	lda	,x+
+		sta	,u+
+		leay	-1,y
+		bne	bootCopy
+
 		bsr	dkIncLSN
 
 		ldd	bootSize
@@ -128,6 +139,9 @@ bootLoop
 
 		leax	bootLoadedMsg,pcr
 		bsr	pStr
+
+		bsr	$2800
+		
 		bra	bootDone
 
 
