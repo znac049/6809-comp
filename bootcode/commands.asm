@@ -118,7 +118,8 @@ bootCmd		leax	bootMsg,pcr
 bootLoop
 		lda	#'.'
 		bsr	pChar
-		
+
+* read the next LSN..		
 		ldx	#secBuff
 		ldy	#bootLSN.p
 		bsr	dkReadLSN
@@ -133,11 +134,13 @@ bootCopy	lda	,x+
 		bsr	dkIncLSN
 
 		ldd	bootSize
+		cmpa	#0
+		beq	bootLoaded
 		subd	#256
-		cmpd	#0
-		bgt	bootLoop
+		std	bootSize
+		bra	bootLoop
 
-		leax	bootLoadedMsg,pcr
+bootLoaded	leax	bootLoadedMsg,pcr
 		bsr	pStr
 
 		bsr	$2800

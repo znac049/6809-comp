@@ -9,7 +9,7 @@
 		pragma	6809	; Just while we are testing with 6809 hardware
 
 * Set to 1 if this is being assembled as a boot rom
-BOOTROM		= 0
+BOOTROM		= 1
 
 
 		include "const.asm"
