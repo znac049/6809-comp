@@ -19,7 +19,6 @@ bootCmd		leax	bootMsg,pcr
 		bsr	dkReadLSN
 		bcs	badRead
 
- rts
 		tfr	x,u	; u = LSN buffer
 
 		leax	boot1Msg,pcr
@@ -56,7 +55,7 @@ bootCmd		leax	bootMsg,pcr
 		bsr	pNL
 
 * Grab the boot size
-       	   	ldd	bootSize,u
+       	   	ldd	DD.bootSize,u
 		std	bootSize
 
 		leax	bootSizeMsg,pcr

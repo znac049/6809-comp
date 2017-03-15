@@ -9,7 +9,7 @@
 		pragma	6809	; Just while we are testing with 6809 hardware
 
 * Set to 1 if this is being assembled as a boot rom
-BOOTROM		= 1
+BOOTROM		= 0
 
 
 		include "const.asm"
@@ -156,6 +156,7 @@ doQuickEnd
 		include "dkio.asm"
 		include "sdio.asm"
 		include "cfio.asm"
+		include "commandline.asm"
 		include "commands.asm"
 		include "os9fs.asm"
 		include "swihand.asm"

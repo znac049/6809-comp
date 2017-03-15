@@ -5,44 +5,6 @@
 *
 
 
-		include	"lsnCmd.asm"
-		include	"lbaCmd.asm"
-		include	"bootCmd.asm"
-		include	"loadCmd.asm"
-
-* The main command table
-cmdTable	fdb	bootCmd
-		fcn	"boot"
-		fdb	0
-
-		fdb	cfInfoCmd
-		fcn	"cfinfo"
-		fdb	cfinfoUsage
-
-		fdb	helpCmd
-		fcn	"help"
-		fdb	0
-
-		fdb	loadCmd
-		fcn	"load"
-		fdb	loadUsage
-
-		fdb	lsnCmd
-		fcn	"lsn"
-		fdb	0
-
-		fdb	lbaCmd
-		fcn	"lba"
-		fdb	0
-
-		fdb	dkbuffCmd
-		fcn	"dkbuff"
-		fdb	0
-
-		fdb	0
-
-
-
 *******************************************************************
 * findCmd - look up command in command table
 *
@@ -120,63 +82,6 @@ mcFail
 		leax	2,x	; skip help message pointer
 	
 mcDone		puls	b,y,pc
-
-
-
-*******************************************************************
-* cfInfoCmd - execute the 'cfinfo' command
-*
-cfInfoCmd	leax	cfinfoMsg,pcr
-		bsr	pStr
-		bsr	cfInfo
-
-		rts
-
-	
-cfinfoMsg	fcn	"Querying CF devices...\r\n"
-cfinfoUsage	fcn	" - display info about CF disk(s), if present"
-
-
-	
-*******************************************************************
-* dkbuffCmd - dump the contents of the disk buffer
-*
-dkbuffCmd	leax	dkbuffMsg,pcr
-		bsr	pStr
-
-		ldy	#0
-		ldx	#secBuff
-
-dkbuff_Next	tfr	x,d
-		bsr	p4hex
-
-		lda	#':'
-		bsr	pChar
-		lda	#' '
-		bsr	pChar
-
-		ldb	#16
-		bsr	pnhex
-
-		lda	#' '
-		bsr	pChar
-		bsr	pChar
-
-		bsr	pnpStr
-
-		bsr	pNL
-
-		leax	16,x
-		leay	16,y
-		cmpy	#512
-		bne	dkbuff_Next
-
-		bsr	pNL
-
-		rts
-
-	
-dkbuffMsg	fcn	"Contents of disk buffer:\r\n"
 
 
 

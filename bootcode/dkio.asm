@@ -26,26 +26,36 @@ dkInit
 * on entry: X - byte *rdBuff - Read buffer address
 *	    Y - byte *LSN
 *
-*  trashes: nothing
-*
-*  returns: X - byte *LSN
+*  returns: X - byte *buff
 *
 
 dkReadLSN	pshs	a,y
 
+* Local vars
+		pshs	y
+		pshs	x
+
+		tfr	y,x	; X -> LSN
 		ldy	#lba.p
 		bsr	LSN2LBA
+
+		ldx	,s	
+		ldy	#lba.p
 		bsr	sdRdBlock
 
 * We only want half of it - os9 LSNs are 256 bytes and SD
 * blocks are 512.
 
+		ldx	,s	; X -> *buff
+		ldy	2,s	; y -> LSN
 		lda	3,y	; check lowest byte of LSN for odd/even
 		anda	#$01
 		beq	evenLSN
 		leax	256,x
 		andcc	#$fe	; Clear carry
-evenLSN		puls	y,a,pc
+evenLSN
+		leas	4,s	; Ditch local vars
+		puls	y,a,pc
 
 	
 	
