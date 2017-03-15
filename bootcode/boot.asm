@@ -156,7 +156,7 @@ doQuickEnd
 		include "dkio.asm"
 		include "sdio.asm"
 		include "cfio.asm"
-		include "commandline.asm"
+		include "cmdline.asm"
 		include "commands.asm"
 		include "os9fs.asm"
 		include "swihand.asm"
