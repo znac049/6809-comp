@@ -17,8 +17,20 @@ cmdTable	fdb	bootCmd
 		fcn	"cfinfo"
 		fdb	cfinfoUsage
 
+		fdb	dkbuffCmd
+		fcn	"dkbuff"
+		fdb	0
+
+		fdb	dumpCmd
+		fcn	"dump"
+		fdb	dumpUsage
+
 		fdb	helpCmd
 		fcn	"help"
+		fdb	0
+
+		fdb	lbaCmd
+		fcn	"lba"
 		fdb	0
 
 		fdb	loadCmd
@@ -27,14 +39,6 @@ cmdTable	fdb	bootCmd
 
 		fdb	lsnCmd
 		fcn	"lsn"
-		fdb	0
-
-		fdb	lbaCmd
-		fcn	"lba"
-		fdb	0
-
-		fdb	dkbuffCmd
-		fcn	"dkbuff"
 		fdb	0
 
 		fdb	0
@@ -517,4 +521,52 @@ dkbuff_Next	tfr	x,d
 dkbuffMsg	fcn	"Contents of disk buffer:\r\n"
 
 
+*******************************************************************
+* dumpCmd - dump the contents of memorry
+*
+dumpCmd		ldy	arg.p
+		lda	,y
+		cmpa	#0
+		beq	dumpNoArg
+
+* An argument was provided - hex address to dump from
+     	        bsr     atow
+		sty	dumpAddr
+
+dumpNoArg	ldx	dumpAddr
+		ldy	#0
+
+dump_Next	tfr	x,d
+		bsr	p4hex
+
+		lda	#':'
+		bsr	pChar
+		lda	#' '
+		bsr	pChar
+
+		ldb	#16
+		bsr	pnhex
+
+		lda	#' '
+		bsr	pChar
+		bsr	pChar
+
+		bsr	pnpStr
+
+		bsr	pNL
+
+		leax	16,x
+		leay	16,y
+		cmpy	#512
+		bne	dump_Next
+
+		bsr	pNL
+
+		stx	dumpAddr
+
+		rts
+
+
+
+dumpUsage	fcn	" [ <addr> ] - dump memory"
 

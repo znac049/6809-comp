@@ -61,10 +61,10 @@ mcHalfMatch	lda	,y	; should be space or EOS
 		beq	mcFullMatch
 		bra	mcFail
 
-mcFullMatch	cmpa	#' '
-		bne	mcSuccess
-		lda	,y+
-		bra	mcFullMatch
+mcFullMatch	lda	,y+
+		beq	mcSuccess
+		cmpa	#' '
+		beq	mcFullMatch
 
 mcSuccess	leay	-1,y
 		sty	arg.p

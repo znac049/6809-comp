@@ -6,4 +6,6 @@
 *.dsk
 *.o
 *.exe
+*.log
+*.bin
 .depend

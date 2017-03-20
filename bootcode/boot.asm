@@ -51,6 +51,9 @@ RESET
 		ldd	ramEnd
 		bsr	p4hex
 		bsr	pNL
+
+		ldd	#0		; Default address to dump
+		sta	dumpAddr
 				
 		bsr	dkInit		; Initialise disk(s)
 

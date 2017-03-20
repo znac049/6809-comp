@@ -84,7 +84,8 @@ atoq_Next
 		bne	atoq_Next	; No, try for another
 
 atoq_notHex
-		puls	x,y,b,a,pc
+		puls	a
+		puls	x,y,b,pc
 
 
 

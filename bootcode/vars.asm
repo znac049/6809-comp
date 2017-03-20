@@ -13,6 +13,7 @@ arg.p		rmb	2	; pointer into command line after the
 	
 ramEnd		rmb    	2
 
+dumpAddr	rmb	2	; Next address to dump
 
 lsn.p		rmb	4	; The os9 sector number
 lba.p		rmb	4	; SD card block number
